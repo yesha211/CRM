@@ -3,7 +3,7 @@ const ErrorHandler = require('../../utils/default/errorHandler');
 
 
 exports.CreateCustomer = async (req, res, next) => {
-    const { bInActive,sAddress, sCustomerName, sEmail, sLanguage, sMobileNumber, sSocialAccounts } = req.body;
+    const { sAddress, sCustomerName, sEmail, sLanguage, sMobileNumber, sSocialAccounts } = req.body;
     const pool = req.pool;
     let address;
     let language;
@@ -17,8 +17,8 @@ exports.CreateCustomer = async (req, res, next) => {
     let createdMCustomer;
     try {
         let [results] = await pool.query(
-            `INSERT INTO MCustomer(bInActive,sMobileNumber, sCustomerName, sSocialAccounts, sAddress, sLanguage, sCustomerGUID, sEmail) VALUES (?,?, ?, ?, ?, ?, ?, ?)`,
-            [bInActive,sMobileNumber, sCustomerName, socialAccounts, address, language, genUUID, sEmail],
+            `INSERT INTO MCustomer(sMobileNumber, sCustomerName, sSocialAccounts, sAddress, sLanguage, sCustomerGUID, sEmail) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [sMobileNumber, sCustomerName, socialAccounts, address, language, genUUID, sEmail],
         );
         // Retrieve the newly created MCustomer
         const [rows] = await pool.query(
