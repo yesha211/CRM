@@ -1,0 +1,34 @@
+{
+"name": "Store Checking",
+"version": "1.0.0",
+"main": "",
+"description": "",
+"homepage": "",
+"license": "",
+"author": "","keywords": [],
+"scripts": {
+
+"start": "node app.js",
+"dev": "nodemon app.js"
+},
+"dependencies": {
+"express": "^4.19.2",
+"nodemon": "^1.19.4",
+"cors": "^2.8.5",
+"body-parser": "^1.20.2",
+"dotenv": "^16.4.5",
+"path": "^0.12.7",
+"mysql2": "^3.11.3",
+"uuid": "^10.0.0"
+},
+"bugs": {
+
+"url": "",
+"email": ""
+},
+"repository": {
+
+"type": "",
+"url": ""
+}
+}
