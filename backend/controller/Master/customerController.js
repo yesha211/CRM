@@ -259,6 +259,6 @@ exports.UpdateCustomerByParams = async (req, res, next) => {
 
 }
 
-
+}
 
 

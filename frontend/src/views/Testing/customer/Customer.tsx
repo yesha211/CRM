@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import reducer, {
     // getAllCustomers,
     // getCustomerByEmail,
-    // getCustomerData,
+    getCustomerData,
     createCustomer,
     // updateCustomer,
     // updateCustomerByParams,
@@ -34,7 +34,7 @@ const Customer = () => {
                 sCustomerName: 'John Doe',
                 sEmail: 'royalswrag@123.com',
                 sMobileNumber: '1234567890',
-                // sLanguage: ['English', 'Hindi'],
+                sLanguage: ['English', 'Hindi'],
             }),
         )
 
@@ -62,7 +62,7 @@ const Customer = () => {
                     onClick={() =>
                         customerData &&
                         dispatch(
-                            deleteCustomer({
+                            getCustomerData({
                                 sCustomerGUID: customerData.sCustomerGUID!,
                             }),
                         )
