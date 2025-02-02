@@ -64,7 +64,6 @@ export const createCustomer = createAsyncThunk(
     SLICE_NAME + '/create',
     async (data: CustomerData) => {
         const response = await apiCreateCustomer(data)
-        console.log('response', response.data)
         return response.data as ApiResponse<Customer>
     },
 )
@@ -81,7 +80,7 @@ export const updateCustomer = createAsyncThunk(
 // Update customer by parameters
 export const updateCustomerByParams = createAsyncThunk(
     SLICE_NAME + '/updateByParams',
-    async (data: { sCustomerGUID: string }) => {
+    async (data: CustomerData) => {
         const response = await apiUpdateCustomerByParams(data)
         return response.data as ApiResponse<Customer>
     },

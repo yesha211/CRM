@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 import reducer, {
     // getAllCustomers,
     // getCustomerByEmail,
-    getCustomerData,
+    // getCustomerData,
     createCustomer,
     // updateCustomer,
-    // updateCustomerByParams,
-    deleteCustomer,
+    updateCustomerByParams,
+    // deleteCustomer,
     useAppSelector,
     useAppDispatch,
-    // CustomerData,
+    CustomerData,
 } from '@/store/Testing/customer'
 import { injectReducer } from '@/store'
 import { Button } from '@/components/ui'
@@ -25,7 +25,6 @@ const Customer = () => {
     const customerData = useAppSelector(
         (state) => state.customer.data.createdCustomer?.data,
     )
-    console.log('sCustomerGUID:', customerData)
 
     useEffect(() => {
         // Dispatch all actions
@@ -62,9 +61,9 @@ const Customer = () => {
                     onClick={() =>
                         customerData &&
                         dispatch(
-                            getCustomerData({
-                                sCustomerGUID: customerData.sCustomerGUID!,
-                            }),
+                            updateCustomerByParams(
+                                customerData as CustomerData,
+                            ),
                         )
                     }
                 >
