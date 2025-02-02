@@ -9,12 +9,12 @@ export type AppConfig = {
 
 const appConfig: AppConfig = {
     //apiPrefix: URL'/api',
-    apiPrefix: '/api',
+    apiPrefix: 'http://localhost:3000',
     authenticatedEntryPath: '/home',
     unAuthenticatedEntryPath: '/sign-in',
     tourPath: '/app/account/kyc-form',
     locale: 'en',
-    enableMock: true,
+    enableMock: false,
     //enableMock: true,
 }
 
