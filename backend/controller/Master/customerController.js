@@ -19,39 +19,29 @@ exports.CreateCustomer = async (req, res, next) => {
   address = JSON.stringify(sAddress);
   socialAccounts = JSON.stringify(sSocialAccounts);
 
-  genUUID = uuidv4();
-  let createdMCustomer;
-  try {
-    let [results] = await pool.query(
-      `INSERT INTO MCustomer(sMobileNumber, sCustomerName, sSocialAccounts, sAddress, sLanguage, sCustomerGUID, sEmail) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        sMobileNumber,
-        sCustomerName,
-        socialAccounts,
-        address,
-        language,
-        genUUID,
-        sEmail,
-      ]
-    );
-    // Retrieve the newly created MCustomer
-    const [rows] = await pool.query(
-      `SELECT * FROM MCustomer WHERE sCustomerGUID = ?`,
-      [genUUID]
-    );
-    createdMCustomer = rows[0];
-  } catch (err) {
-    const error = new ErrorHandler(
-      "Error while Inserting MCustomer record!",
-      500
-    );
-    return next(error);
-  }
+    genUUID = uuidv4();
+    let createdMCustomer;
+    try {
+        let [results] = await pool.query(
+            `INSERT INTO MCustomer(sMobileNumber, sCustomerName, sSocialAccounts, sAddress, sLanguage, sCustomerGUID, sEmail) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [sMobileNumber, sCustomerName, socialAccounts, address, language, genUUID, sEmail],
+        );
+        // Retrieve the newly created MCustomer
+        const [rows] = await pool.query(
+            `SELECT * FROM MCustomer WHERE sCustomerGUID = ?`,
+            [genUUID]
+        );
+        createdMCustomer = rows[0];
 
-  //   if (createdMCustomer.sLanguage) {
-  //     //		JSON.parse
-  //     createdMCustomer.sLanguage = JSON.parse(createdMCustomer.sLanguage);
-  //   }
+    } catch (err) {
+        const error = new ErrorHandler(
+            'Error while Inserting MCustomer record!',
+            500
+        );
+        return next(error);
+    }
+    //		JSON.parse
+    createdMCustomer.sLanguage = JSON.parse(createdMCustomer.sLanguage)
 
   res.status(201);
   res.json({ Status: "201", Message: "Success", data: createdMCustomer });
@@ -260,8 +250,15 @@ exports.UpdateCustomerByParams = async (req, res, next) => {
   }
   if (updatedMCustomer.sLanguage) {
     //		JSON.parse
-    updatedMCustomer.sLanguage = JSON.parse(updatedMCustomer.sLanguage);
-  }
-  res.status(201);
-  res.json({ Status: "201", Message: "Success", data: updatedMCustomer });
-};
+    updatedMCustomer.sLanguage = JSON.parse(updatedMCustomer.sLanguage)
+
+    res.status(201);
+    res.json({ 'Status': '201', 'Message': 'Success', 'data': updatedMCustomer });
+
+
+
+}
+
+
+
+
