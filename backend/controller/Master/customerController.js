@@ -48,8 +48,9 @@ exports.CreateCustomer = async (req, res, next) => {
     return next(error);
   }
   //		JSON.parse
-  // createdMCustomer.sLanguage = JSON.parse(createdMCustomer.sLanguage)
-
+  if(createdMCustomer.sLanguage){
+   createdMCustomer.sLanguage = JSON.parse(createdMCustomer.sLanguage)
+  }
   res.status(201);
   res.json({ Status: "201", Message: "Success", data: createdMCustomer });
 };
@@ -140,11 +141,13 @@ exports.listCustomerAll = async (req, res, next) => {
     return next(error);
   }
   //		JSOn.Pasre
-  if (var_MCustomer_List.sLanguage) {
+  
     var_MCustomer_List.forEach((element) => {
+      if (element.sLanguage) {
       element.sLanguage = JSON.parse(element.sLanguage);
+      }
     });
-  }
+  
 
   res.status(200);
   res.json({ msg: "Record Fetched !", data: var_MCustomer_List });
@@ -255,8 +258,8 @@ exports.UpdateCustomerByParams = async (req, res, next) => {
   if (updatedMCustomer.sLanguage) {
     //		JSON.parse
     updatedMCustomer.sLanguage = JSON.parse(updatedMCustomer.sLanguage);
-
+  }
     res.status(201);
     res.json({ Status: "201", Message: "Success", data: updatedMCustomer });
-  }
+  
 };
