@@ -48,7 +48,7 @@ exports.CreateCustomer = async (req, res, next) => {
     return next(error);
   }
   //		JSON.parse
-  // createdMCustomer.sLanguage = JSON.parse(createdMCustomer.sLanguage)
+  createdMCustomer.sLanguage = JSON.parse(createdMCustomer.sLanguage);
 
   res.status(201);
   res.json({ Status: "201", Message: "Success", data: createdMCustomer });
