@@ -1,3 +1,3 @@
-import customer from './Customer'
+import customer from './customer'
 
 export default customer
