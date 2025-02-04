@@ -10,24 +10,37 @@ import {
     apiUpdate,
 } from '@/services/Master/apiMAction_Template'
 
-import { Delete_Req, } from '@/@types/interfaces/Master/MAction_Template/DeleteInterface'
-import { Get_Req, Get_Res, } from '@/@types/interfaces/Master/MAction_Template/GetInterface'
-import { getTemplateFile_Req, getTemplateFile_Res, } from '@/@types/interfaces/Master/MAction_Template/getTemplateFileInterface'
-import { listTemplates_Res, } from '@/@types/interfaces/Master/MAction_Template/listTemplatesInterface'
-import { listTemplatesALL_Res, } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
-import { Create_Req, Create_Res, } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
-import { setTemplateInActive_Req, setTemplateInActive_Res, } from '@/@types/interfaces/Master/MAction_Template/setTemplateInActiveInterface'
-import { Update_Req, Update_Res, } from '@/@types/interfaces/Master/MAction_Template/UpdateInterface'
+import { Delete_Req } from '@/@types/interfaces/Master/MAction_Template/DeleteInterface'
+import {
+    Get_Req,
+    Get_Res,
+} from '@/@types/interfaces/Master/MAction_Template/GetInterface'
+import {
+    getTemplateFile_Req,
+    getTemplateFile_Res,
+} from '@/@types/interfaces/Master/MAction_Template/getTemplateFileInterface'
+import { listTemplates_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesInterface'
+import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
+import {
+    Create_Req,
+    Create_Res,
+} from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
+import {
+    setTemplateInActive_Req,
+    setTemplateInActive_Res,
+} from '@/@types/interfaces/Master/MAction_Template/setTemplateInActiveInterface'
+import {
+    Update_Req,
+    Update_Res,
+} from '@/@types/interfaces/Master/MAction_Template/UpdateInterface'
 
 export const SLICE_NAME = 'MAction_Template'
-
 
 type Delete_Req_Data = Delete_Req & Record<string, unknown>
 
 export const Delete = createAsyncThunk(
     SLICE_NAME + 'Delete',
     async (data: Delete_Req_Data) => {
-
         await apiDelete(data)
     },
 )
@@ -37,7 +50,6 @@ type Get_Req_Data = Get_Req & Record<string, unknown>
 export const Get = createAsyncThunk(
     SLICE_NAME + 'Get',
     async (data: Get_Req_Data) => {
-
         const response = await apiGet(data)
         return response.data as Get_Res
     },
@@ -48,27 +60,22 @@ type getTemplateFile_Req_Data = getTemplateFile_Req & Record<string, unknown>
 export const getTemplateFile = createAsyncThunk(
     SLICE_NAME + 'getTemplateFile',
     async (data: getTemplateFile_Req_Data) => {
-
         const response = await apigetTemplateFile(data)
         return response.data as getTemplateFile_Res
     },
 )
 
-
 export const listTemplates = createAsyncThunk(
     SLICE_NAME + 'listTemplates',
     async () => {
-
         const response = await apilistTemplates()
         return response.data as listTemplates_Res
     },
 )
 
-
 export const listTemplatesALL = createAsyncThunk(
     SLICE_NAME + 'listTemplatesALL',
     async () => {
-
         const response = await apilistTemplatesALL()
         return response.data as listTemplatesALL_Res
     },
@@ -79,18 +86,17 @@ type Create_Req_Data = Create_Req & Record<string, unknown>
 export const Create = createAsyncThunk(
     SLICE_NAME + 'Create',
     async (data: Create_Req_Data) => {
-
         const response = await apiCreate(data)
         return response.data as Create_Res
     },
 )
 
-type setTemplateInActive_Req_Data = setTemplateInActive_Req & Record<string, unknown>
+type setTemplateInActive_Req_Data = setTemplateInActive_Req &
+    Record<string, unknown>
 
 export const setTemplateInActive = createAsyncThunk(
     SLICE_NAME + 'setTemplateInActive',
     async (data: setTemplateInActive_Req_Data) => {
-
         const response = await apisetTemplateInActive(data)
         return response.data as setTemplateInActive_Res
     },
@@ -101,12 +107,10 @@ type Update_Req_Data = Update_Req & Record<string, unknown>
 export const Update = createAsyncThunk(
     SLICE_NAME + 'Update',
     async (data: Update_Req_Data) => {
-
         const response = await apiUpdate(data)
         return response.data as Update_Res
     },
 )
-
 
 export type MAction_TemplateState = {
     loading: boolean
@@ -135,12 +139,11 @@ const MAction_TemplateSlice = createSlice({
     initialState: initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder// Delete
+        builder // Delete
             .addCase(Delete.pending, (state) => {
                 state.loading = true
             })
             .addCase(Delete.fulfilled, (state) => {
-
                 state.loading = false
             })
             .addCase(Delete.rejected, (state) => {
