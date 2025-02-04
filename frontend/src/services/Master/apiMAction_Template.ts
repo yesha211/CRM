@@ -31,7 +31,7 @@ export async function apilistTemplates<T>() {
 }
 export async function apilistTemplatesALL<T>() {
     return ApiService.fetchData<T>({
-        url: `/listtemplatesall`,
+        url: `/mactiontemplate/listtemplatesall`,
         method: 'get',
     })
 }

@@ -1,5 +1,5 @@
 export interface listTemplates_Res {
-    data?: data_type
+    data?: data_type[]
 }
 
 interface data_type {

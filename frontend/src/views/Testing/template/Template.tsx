@@ -13,7 +13,7 @@ import * as Yup from 'yup'
 import { Checkbox, Notification, Select, toast } from '@/components/ui'
 import { Create_Req } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
 import { AdaptableCard } from '@/components/shared'
-import { useAppSelector, useAppDispatch, Create } from '@/store/Master/template'
+import { useAppDispatch, Create } from '@/store/Master/template'
 import { useNavigate } from 'react-router-dom'
 
 export type SetSubmitting = (isSubmitting: boolean) => void
@@ -92,17 +92,12 @@ const sTemplate_Send_via_options = [
 
 const Template = () => {
     const dispatch = useAppDispatch()
-    const responseData = useAppSelector(
-        (state) => state.MAction_Template?.data?.Create_State?.data,
-    )
-    console.log('responseData', responseData)
     const navigate = useNavigate()
 
     const onFormSubmit = async (
         formData: Create_Req_Data,
         setSubmitting: SetSubmitting,
     ) => {
-        console.log('formData', formData)
         const success = await dispatch(Create(formData))
         setSubmitting(false)
         if (success) {
@@ -118,7 +113,7 @@ const Template = () => {
                     placement: 'top-center',
                 },
             )
-            navigate('/templateList')
+            navigate('/testing/templateList')
         }
     }
 

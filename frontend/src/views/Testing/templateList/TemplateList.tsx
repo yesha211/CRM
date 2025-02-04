@@ -2,16 +2,18 @@ import { injectReducer } from '@/store'
 import reducer, {
     useAppSelector,
     useAppDispatch,
-    listTemplates,
+    listTemplatesALL,
 } from '@/store/Master/template'
 import { useEffect, useMemo } from 'react'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import { Badge, Checkbox, DatePicker, Input } from '@/components/ui'
+import { Badge, Checkbox, Input } from '@/components/ui'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
+import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
+import { useLocation } from 'react-router-dom'
 
-injectReducer('templateGet', reducer)
+injectReducer('MAction_Template', reducer)
 
 const sendViaStatusColor: Record<
     string,
@@ -38,7 +40,9 @@ const sendViaStatusColor: Record<
     },
 }
 
-const ActionColumn = ({ row }: { row: listTemplatesALL_Res }) => {
+type TemplateType = Required<listTemplatesALL_Res>['data']
+
+const ActionColumn = ({ row }: { row: TemplateType }) => {
     const { textTheme } = useThemeClass()
 
     const onEdit = () => {
@@ -68,17 +72,20 @@ const ActionColumn = ({ row }: { row: listTemplatesALL_Res }) => {
 }
 
 const TemplateList = () => {
+    const location = useLocation()
+
     const templateData = useAppSelector(
-        (state) => state.MAction_Template.data.listTemplates_State.data,
-    )
+        (state) =>
+            state.MAction_Template?.data?.listTemplatesALL_State?.data ?? [],
+    ) as TemplateType[]
 
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(listTemplates())
-    }, [dispatch])
+        dispatch(listTemplatesALL())
+    }, [dispatch, location.pathname])
 
-    const columns: ColumnDef<listTemplates_Res>[] = useMemo(
+    const columns: ColumnDef<TemplateType>[] = useMemo(
         () => [
             {
                 header: 'Inactive',
@@ -120,6 +127,9 @@ const TemplateList = () => {
                 accessorKey: 'sTemplate_Send_via',
                 cell: (props) => {
                     const { sTemplate_Send_via } = props.row.original
+
+                    if (!sTemplate_Send_via) return null
+
                     return (
                         <div className="flex items-center gap-2">
                             <Badge
@@ -146,21 +156,7 @@ const TemplateList = () => {
                     return <p className="w-[250px]">{sMessage_to_send}</p>
                 },
             },
-            {
-                header: 'Message to Send',
-                accessorKey: 'sMessageg_to_send',
-                cell: (props) => {
-                    const { sMessage_to_send } = props.row.original
-                    return <p className="w-[250px]  ">{sMessage_to_send}</p>
-                },
-            },
-            {
-                header: 'Date',
-                id: 'date',
-                cell: () => {
-                    return <DatePicker />
-                },
-            },
+
             {
                 header: '',
                 id: 'action',
@@ -174,6 +170,7 @@ const TemplateList = () => {
         <div>
             <h3 className="mb-5">Template List</h3>
             <DataTable
+                key={templateData.length}
                 pagingData={{
                     total: templateData.length,
                     pageIndex: 1,
