@@ -3,7 +3,7 @@ import reducer, {
     // getAllCustomers,
     // getCustomerByEmail,
     // getCustomerData,
-    createCustomer,
+    // createCustomer,
     // updateCustomer,
     updateCustomerByParams,
     // deleteCustomer,
@@ -28,15 +28,14 @@ const Customer = () => {
 
     useEffect(() => {
         // Dispatch all actions
-        dispatch(
-            createCustomer({
-                sCustomerName: 'John Doe',
-                sEmail: 'royalswrag@123.com',
-                sMobileNumber: '1234567890',
-                sLanguage: ['English', 'Hindi'],
-            }),
-        )
-
+        // dispatch(
+        //     createCustomer({
+        //         sCustomerName: 'John Doe',
+        //         sEmail: 'royalswrag@123.com',
+        //         sMobileNumber: '1234567890',
+        //         sLanguage: ['English', 'Hindi'],
+        //     }),
+        // )
         // dispatch(getAllCustomers())
         // if (sEmail) {
         //     dispatch(getCustomerByEmail({ sEmail }))
