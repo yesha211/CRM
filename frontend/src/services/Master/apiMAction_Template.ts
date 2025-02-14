@@ -2,7 +2,7 @@ import ApiService from '@/services/ApiService'
 
 export async function apiDelete<T, U extends Record<string, unknown>>(data: U) {
     return ApiService.fetchData<T>({
-        url: `/delete?sTemplateGUID=${data.sTemplateGUID}`,
+        url: `/mactiontemplate/delete?sTemplateGUID=${data.sTemplateGUID}`,
         method: 'delete',
         data,
     })

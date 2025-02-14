@@ -3,15 +3,17 @@ import reducer, {
     useAppSelector,
     useAppDispatch,
     listTemplatesALL,
+    Delete,
 } from '@/store/Master/template'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import { Badge, Checkbox, Input } from '@/components/ui'
+import { Badge, Checkbox, Input, Notification, toast } from '@/components/ui'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
 import { useLocation } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/shared'
 
 injectReducer('MAction_Template', reducer)
 
@@ -42,15 +44,57 @@ const sendViaStatusColor: Record<
 
 type TemplateType = Required<listTemplatesALL_Res>['data']
 
+export type OnDeleteCallback = React.Dispatch<React.SetStateAction<boolean>>
+
 const ActionColumn = ({ row }: { row: TemplateType }) => {
     const { textTheme } = useThemeClass()
+    const dispatch = useAppDispatch()
 
     const onEdit = () => {
         console.log('Edit', row)
     }
 
-    const onDelete = () => {
+    const onDelete = async () => {
         console.log('Delete', row)
+        if (row.sTemplateGUID) {
+            const success = await dispatch(
+                Delete({ sTemplateGUID: row.sTemplateGUID }),
+            )
+
+            if (success) {
+                toast.push(
+                    <Notification
+                        title={'Successfuly deleed'}
+                        type="success"
+                        duration={2500}
+                    >
+                        Product successfuly added
+                    </Notification>,
+                    {
+                        placement: 'top-center',
+                    },
+                )
+            }
+        } else {
+            toast.push(
+                <Notification title={'Error'} type="danger" duration={2500}>
+                    Template not found
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+        }
+    }
+
+    const [dialogOpen, setDialogOpen] = useState(false)
+
+    const onConfirmDialogOpen = () => {
+        setDialogOpen(true)
+    }
+
+    const onConfirmDialogClose = () => {
+        setDialogOpen(false)
     }
 
     return (
@@ -61,9 +105,26 @@ const ActionColumn = ({ row }: { row: TemplateType }) => {
             >
                 <HiOutlinePencil />
             </span>
+
+            <ConfirmDialog
+                isOpen={dialogOpen}
+                type="danger"
+                title="Delete Item"
+                confirmButtonColor="red-600"
+                onClose={onConfirmDialogClose}
+                onRequestClose={onConfirmDialogClose}
+                onCancel={onConfirmDialogClose}
+                onConfirm={onDelete}
+            >
+                <p>
+                    Are you sure you want to delete this Template? All record
+                    related to this Template will be deleted as well. This
+                    action cannot be undone.
+                </p>
+            </ConfirmDialog>
             <span
                 className="cursor-pointer p-2 hover:text-red-500"
-                onClick={onDelete}
+                onClick={onConfirmDialogOpen}
             >
                 <HiOutlineTrash />
             </span>

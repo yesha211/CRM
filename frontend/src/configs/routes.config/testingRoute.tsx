@@ -20,5 +20,17 @@ const testingRoute: Routes = [
         component: lazy(() => import('@/views/Testing/templateList')),
         authority: [],
     },
+    {
+        key: 'nav.testing.templateDetailNoForm',
+        path: '/testing/templateDetailNoForm',
+        component: lazy(() => import('@/views/Testing/templateNoForm')),
+        authority: [],
+    },
+    {
+        key: 'nav.testing.templateDetailFormik',
+        path: '/testing/templateDetailFormik',
+        component: lazy(() => import('@/views/Testing/templateFormik')),
+        authority: [],
+    },
 ]
 export default testingRoute
