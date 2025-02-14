@@ -64,27 +64,29 @@ const ActionColumn = ({ row }: { row: TemplateType }) => {
             if (success) {
                 toast.push(
                     <Notification
-                        title={'Successfuly deleed'}
+                        title={'Successfully deleted'}
                         type="success"
                         duration={2500}
                     >
-                        Product successfuly added
+                        Template successfully deleted
+                    </Notification>,
+                    {
+                        placement: 'top-center',
+                    },
+                )
+                dispatch(listTemplatesALL())
+            } else {
+                toast.push(
+                    <Notification title={'Error'} type="danger" duration={2500}>
+                        Template not found
                     </Notification>,
                     {
                         placement: 'top-center',
                     },
                 )
             }
-        } else {
-            toast.push(
-                <Notification title={'Error'} type="danger" duration={2500}>
-                    Template not found
-                </Notification>,
-                {
-                    placement: 'top-center',
-                },
-            )
         }
+        setDialogOpen(false)
     }
 
     const [dialogOpen, setDialogOpen] = useState(false)
