@@ -24,7 +24,7 @@ type OnDelete = (callback: OnDeleteCallback) => void
 
 const validationSchema = Yup.object().shape({
     sMessage_to_send: Yup.string().required('Message to send is required'),
-    sTemplate_ID: Yup.string().required('Template ID is required'),
+    sTemplate_ID: Yup.string().required(),
     sTemplate_Send_via: Yup.string().required('Template send via is required'),
 })
 
