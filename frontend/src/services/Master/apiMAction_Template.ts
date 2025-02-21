@@ -9,7 +9,7 @@ export async function apiDelete<T, U extends Record<string, unknown>>(data: U) {
 }
 export async function apiGet<T, U extends Record<string, unknown>>(data: U) {
     return ApiService.fetchData<T>({
-        url: `/get/sTemplateGUID/${data.sTemplateGUID}`,
+        url: `/mactiontemplate/get/sTemplateGUID/${data.sTemplateGUID}`,
         method: 'get',
         data,
     })
@@ -54,7 +54,7 @@ export async function apisetTemplateInActive<
 }
 export async function apiUpdate<T, U extends Record<string, unknown>>(data: U) {
     return ApiService.fetchData<T>({
-        url: `/update`,
+        url: `/mactiontemplate/update`,
         method: 'put',
         data,
     })

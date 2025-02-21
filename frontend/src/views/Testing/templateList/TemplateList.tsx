@@ -12,7 +12,7 @@ import { Badge, Checkbox, Input, Notification, toast } from '@/components/ui'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ConfirmDialog } from '@/components/shared'
 
 injectReducer('MAction_Template', reducer)
@@ -49,9 +49,12 @@ export type OnDeleteCallback = React.Dispatch<React.SetStateAction<boolean>>
 const ActionColumn = ({ row }: { row: TemplateType }) => {
     const { textTheme } = useThemeClass()
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     const onEdit = () => {
-        console.log('Edit', row)
+        navigate(
+            `/testing/templateDetailNoForm?sTemplateGUID=${row.sTemplateGUID}`,
+        )
     }
 
     const onDelete = async () => {

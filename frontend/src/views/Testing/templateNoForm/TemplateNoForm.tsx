@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
@@ -7,9 +7,18 @@ import { Checkbox, Notification, Select, toast } from '@/components/ui'
 import { SingleValue } from 'react-select'
 import { Create_Req } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
 import { AdaptableCard } from '@/components/shared'
-import { useAppDispatch, Create } from '@/store/Master/template'
-import { useNavigate } from 'react-router-dom'
+import reducer, {
+    useAppDispatch,
+    Create,
+    Get,
+    Update,
+    useAppSelector,
+} from '@/store/Master/template'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FiSave, FiTrash } from 'react-icons/fi'
+import { injectReducer } from '@/store'
+
+injectReducer('MAction_Template', reducer)
 
 export type SetSubmitting = (isSubmitting: boolean) => void
 
@@ -44,6 +53,30 @@ const TemplateNoForm = () => {
     const [isInactive, setIsInactive] = useState(false)
     const [errors, setErrors] = useState<Record<string, string>>({})
 
+    const [searchParams] = useSearchParams()
+    const sTemplateGUIDURL = searchParams.get('sTemplateGUID')
+
+    const sTemplateData = useAppSelector(
+        (state) => state.MAction_Template.data.Get_State.data,
+    )
+
+    console.log(sTemplateData)
+
+    useEffect(() => {
+        if (sTemplateGUIDURL) {
+            dispatch(Get({ sTemplateGUID: sTemplateGUIDURL }))
+        }
+    }, [sTemplateGUIDURL, dispatch])
+
+    useEffect(() => {
+        if (sTemplateGUIDURL && sTemplateData) {
+            setSendVia(sTemplateData?.sTemplate_Send_via || '')
+            setTemplateId(sTemplateData?.sTemplate_ID || '')
+            setMessageToSend(sTemplateData?.sMessage_to_send || '')
+            setIsInactive(sTemplateData?.bInActive || false)
+        }
+    }, [sTemplateData, sTemplateGUIDURL])
+
     const onFormSubmit = async () => {
         const formData: Create_Req_Data = {
             bInActive: isInactive,
@@ -68,21 +101,39 @@ const TemplateNoForm = () => {
             }
         }
 
-        const success = await dispatch(Create(formData))
-        if (success) {
+        let response
+        if (sTemplateGUIDURL) {
+            response = await dispatch(
+                Update({ ...formData, sTemplateGUID: sTemplateGUIDURL }),
+            )
+        } else {
+            response = await dispatch(Create(formData))
+        }
+
+        if (
+            Update.fulfilled.match(response) ||
+            Create.fulfilled.match(response)
+        ) {
             toast.push(
-                <Notification
-                    title={'Successfully added'}
-                    type="success"
-                    duration={2500}
-                >
-                    Template successfully added
+                <Notification title={'Success'} type="success" duration={2500}>
+                    {sTemplateGUIDURL
+                        ? 'Template successfully updated'
+                        : 'Template successfully added'}
                 </Notification>,
                 {
                     placement: 'top-center',
                 },
             )
             navigate('/testing/templateList')
+        } else {
+            toast.push(
+                <Notification title={'Error'} type="danger" duration={2500}>
+                    {response.error.message}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
         }
     }
 
