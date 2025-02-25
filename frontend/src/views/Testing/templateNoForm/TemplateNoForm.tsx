@@ -4,7 +4,6 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
 import { Checkbox, Notification, Select, toast } from '@/components/ui'
-import { SingleValue } from 'react-select'
 import { Create_Req } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
 import { AdaptableCard } from '@/components/shared'
 import reducer, {
@@ -32,12 +31,7 @@ const validationSchema = Yup.object().shape({
 
 type Create_Req_Data = Create_Req & Record<string, unknown>
 
-interface OptionType {
-    label: string
-    value: string
-}
-
-const sTemplate_Send_via_options: OptionType[] = [
+const sTemplate_Send_via_options = [
     { label: 'WhatsApp', value: 'WhatsApp' },
     { label: 'Email', value: 'Email' },
     { label: 'Both', value: 'Both' },
@@ -59,8 +53,6 @@ const TemplateNoForm = () => {
     const sTemplateData = useAppSelector(
         (state) => state.MAction_Template.data.Get_State.data,
     )
-
-    console.log(sTemplateData)
 
     useEffect(() => {
         if (sTemplateGUIDURL) {
@@ -188,23 +180,20 @@ const TemplateNoForm = () => {
                             </label>
                             <Select
                                 options={sTemplate_Send_via_options}
-                                size="md"
-                                isSearchable={true}
                                 className={
                                     errors.sTemplate_Send_via
                                         ? 'border-red-500'
                                         : ''
                                 }
-                                placeholder="Choose Send via"
+                                placeholder="Choose Send via here"
                                 value={sTemplate_Send_via_options.find(
-                                    (option) => option.value === sendVia,
+                                    ({ value }) => value === sendVia,
                                 )}
-                                onChange={(option: SingleValue<OptionType>) => {
-                                    if (option) {
-                                        setSendVia(option.value)
-                                    }
-                                }}
-                            ></Select>
+                                onChange={(option) =>
+                                    option && setSendVia(option.value)
+                                }
+                            />
+
                             {errors.sTemplate_Send_via && (
                                 <p className="text-red-500 text-sm">
                                     {errors.sTemplate_Send_via}

@@ -25,7 +25,7 @@ export async function apigetTemplateFile<T, U extends Record<string, unknown>>(
 }
 export async function apilistTemplates<T>() {
     return ApiService.fetchData<T>({
-        url: `/listtemplates`,
+        url: `/mactiontemplate/listtemplates`,
         method: 'get',
     })
 }
