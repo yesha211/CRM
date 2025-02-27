@@ -1,4 +1,5 @@
 import Statistic from '@/components/widgets/Statistic'
+import TimeLineWidget from '@/components/widgets/TimeLineWidget'
 import React from 'react'
 
 const Home = () => {
@@ -21,11 +22,16 @@ const Home = () => {
     ]
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-            {/* <div className="col-span-1 lg:col-span-2 xl:col-span-1"> */}
-            <Statistic data={data} />
-            {/* </div> */}
-        </div>
+        <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+                {/* <div className="col-span-1 lg:col-span-2 xl:col-span-1"> */}
+                <Statistic data={data} />
+                {/* </div> */}
+            </div>
+            <div className="w-full mt-4 flex justify-center">
+                <TimeLineWidget />
+            </div>
+        </>
     )
 }
 

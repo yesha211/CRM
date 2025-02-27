@@ -106,7 +106,6 @@ const Statistic = ({ data = [] }: { data?: Partial<Statistic>[] }) => {
                 <StatisticCard key={card.key} data={card} />
             ))}
         </>
-        // </div>
     )
 }
 
