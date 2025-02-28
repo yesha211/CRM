@@ -1,25 +1,38 @@
 import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
 
-const Card1 = () => {
+export interface Card1Props {
+    image: string
+    heading: string
+    subHeading: string
+    description: string
+    avatar: string
+    avatarName: string
+    avatarDate: string
+}
+
+const Card1 = ({
+    image,
+    heading,
+    subHeading,
+    description,
+    avatar,
+    avatarDate,
+    avatarName,
+}: Card1Props) => {
     const cardFooter = (
         <div className="flex items-center">
-            <Avatar
-                size={30}
-                className="mr-2"
-                shape="circle"
-                src="/img/avatars/thumb-1.jpg"
-            />
+            <Avatar size={30} className="mr-2" shape="circle" src={avatar} />
             <span>
-                <h6 className="text-sm">Kristen Fisher</h6>
-                <span className="text-xs">Sep 23, 2021</span>
+                <h6 className="text-sm">{avatarName}</h6>
+                <span className="text-xs">{avatarDate}</span>
             </span>
         </div>
     )
 
     const cardHeader = (
         <div className="rounded-tl-lg rounded-tr-lg overflow-hidden">
-            <img src="/img/others/img-1.jpg" alt="card header" />
+            <img src={image} alt="card header" />
         </div>
     )
 
@@ -35,14 +48,10 @@ const Card1 = () => {
                 headerBorder={false}
             >
                 <span className="text-emerald-600 font-semibold">
-                    Life Style
+                    {subHeading}
                 </span>
-                <h4 className="font-bold my-3">Use the modern rules</h4>
-                <p>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the
-                    industry&apos;s.
-                </p>
+                <h4 className="font-bold my-3">{heading}</h4>
+                <p>{description}</p>
             </Card>
         </div>
     )

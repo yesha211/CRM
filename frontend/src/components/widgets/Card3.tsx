@@ -1,11 +1,26 @@
 import Card from '@/components/ui/Card'
-import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'
 
-const Card3 = () => {
+export interface Card3Props {
+    image: string
+    heading: string
+    subHeading: string
+    icon1: React.ReactNode
+    icon2: React.ReactNode
+    icon3: React.ReactNode
+}
+
+const Card3 = ({
+    image,
+    heading,
+    subHeading,
+    icon1,
+    icon2,
+    icon3,
+}: Card3Props) => {
     const cardHeader = (
         <div className="h-80 w-full overflow-hidden rounded-t-lg">
             <img
-                src="https://docs.material-tailwind.com/img/team-3.jpg"
+                src={image}
                 alt="profile-picture"
                 className="w-full h-full object-cover"
             />
@@ -14,14 +29,14 @@ const Card3 = () => {
 
     const cardFooter = (
         <div className="flex justify-center gap-7 pt-2">
-            <a href="#facebook" className="text-blue-600 text-xl">
-                <FaFacebook />
+            <a href="#icon1" className="text-blue-600 text-xl">
+                {icon1}
             </a>
-            <a href="#twitter" className="text-sky-400 text-xl">
-                <FaTwitter />
+            <a href="#icon2" className="text-sky-400 text-xl">
+                {icon2}
             </a>
-            <a href="#instagram" className="text-purple-500 text-xl">
-                <FaInstagram />
+            <a href="#icon3" className="text-purple-500 text-xl">
+                {icon3}
             </a>
         </div>
     )
@@ -36,11 +51,9 @@ const Card3 = () => {
                 footerBorder={false}
             >
                 <h4 className="text-2xl font-bold text-blue-gray-700 mb-2">
-                    Natalie Paisley
+                    {heading}
                 </h4>
-                <p className="text-blue-gray-500 font-medium">
-                    CEO / Co-Founder
-                </p>
+                <p className="text-blue-gray-500 font-medium">{subHeading}</p>
             </Card>
         </div>
     )

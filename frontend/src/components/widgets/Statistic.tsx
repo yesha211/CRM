@@ -9,7 +9,13 @@ import {
     HiOutlineTrendingUp,
     HiOutlineTrendingDown,
 } from 'react-icons/hi'
-import type { Statistic } from '@/components/widgets/types'
+
+export interface StatisticProps {
+    key: string
+    label: string
+    value: number
+    growShrink?: number
+}
 
 const GrowShrink = ({ value }: { value: number }) => {
     return (
@@ -79,7 +85,7 @@ const StatisticIcon = ({ type }: { type?: string }) => {
     }
 }
 
-const StatisticCard = ({ data = {} }: { data: Partial<Statistic> }) => {
+const StatisticCard = ({ data = {} }: { data: Partial<StatisticProps> }) => {
     return (
         <Card className="col-span-1 lg:col-span-2 xl:col-span-2">
             <div className="flex items-center gap-4">
@@ -99,7 +105,7 @@ const StatisticCard = ({ data = {} }: { data: Partial<Statistic> }) => {
     )
 }
 
-const Statistic = ({ data = [] }: { data?: Partial<Statistic>[] }) => {
+const Statistic = ({ data = [] }: { data?: Partial<StatisticProps>[] }) => {
     return (
         <>
             {data.map((card) => (
