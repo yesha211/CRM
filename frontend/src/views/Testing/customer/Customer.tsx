@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import reducer, {
-    // getAllCustomers,
+    getAllCustomers,
     // getCustomerByEmail,
     // getCustomerData,
     // createCustomer,
@@ -43,6 +43,7 @@ const Customer = () => {
         // if (sCustomerGUID) {
         //     dispatch(getCustomerData({ sCustomerGUID }))
         // }
+        dispatch(getAllCustomers())
     }, [dispatch, sEmail])
 
     // Log the state

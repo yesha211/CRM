@@ -14,9 +14,32 @@ import {
     FaXRay,
     FaCar,
 } from 'react-icons/fa'
-import React from 'react'
+import reducer, {
+    listTemplatesALL,
+    useAppDispatch,
+    useAppSelector,
+} from '@/store/Master/template'
+import { useEffect } from 'react'
+import { injectReducer } from '@/store'
+import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
+
+injectReducer('MAction_Template', reducer)
+
+type TemplateType = Required<listTemplatesALL_Res>['data']
 
 const Cards = () => {
+    const templateData = useAppSelector(
+        (state) =>
+            state.MAction_Template?.data?.listTemplatesALL_State?.data ?? [],
+    ) as TemplateType[]
+
+    console.log('Template Data:', templateData)
+
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(listTemplatesALL())
+    }, [dispatch])
     return (
         <div>
             <div className="w-full mt-4 flex justify-center border-t border-gray-200 pt-4 gap-4">
@@ -84,6 +107,16 @@ const Cards = () => {
                         'Unlimited Data',
                     ]}
                 />
+            </div>
+            <div className="w-full mt-4 grid grid-cols-4 border-t border-gray-200 pt-4 gap-4">
+                {templateData.map((template) => (
+                    <Card2
+                        key={template.sTemplateGUID}
+                        title={template.sTemplate_ID ?? ''}
+                        description={template.sMessage_to_send ?? ''}
+                        buttonText={template.sTemplate_Send_via ?? ''}
+                    />
+                ))}
             </div>
         </div>
     )

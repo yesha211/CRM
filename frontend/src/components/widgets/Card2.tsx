@@ -2,7 +2,7 @@ import Card from '@/components/ui/Card'
 import { Button } from '../ui'
 
 export interface Card2Props {
-    image: string
+    image?: string
     title: string
     description: string
     buttonText: string
@@ -16,7 +16,7 @@ const Card2 = ({
     buttonText,
     buttonColor = '',
 }: Card2Props) => {
-    const cardHeader = (
+    const cardHeader = image ? (
         <div className="relative h-56 rounded-t-lg overflow-hidden">
             <img
                 className="w-full h-full object-cover"
@@ -24,7 +24,7 @@ const Card2 = ({
                 alt="card-image"
             />
         </div>
-    )
+    ) : null
 
     const cardFooter = (
         <div className="pt-2">
