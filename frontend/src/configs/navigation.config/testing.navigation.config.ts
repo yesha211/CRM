@@ -65,6 +65,16 @@ const testingNavigationConfig: NavigationTree[] = [
                 authority: [ADMIN, USER],
                 subMenu: [],
             },
+            {
+                key: 'testing.UserPermission',
+                path: '/testing/userPermission',
+                title: 'User Permission',
+                translateKey: 'nav.testing.UserPermission',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                subMenu: [],
+            },
         ],
     },
 ]

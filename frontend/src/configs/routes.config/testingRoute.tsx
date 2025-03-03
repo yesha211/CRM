@@ -32,5 +32,11 @@ const testingRoute: Routes = [
         component: lazy(() => import('@/views/Testing/templateFormik')),
         authority: [],
     },
+    {
+        key: 'nav.testing.userPermission',
+        path: '/testing/userPermission',
+        component: lazy(() => import('@/views/Testing/UserPermission')),
+        authority: [],
+    },
 ]
 export default testingRoute
