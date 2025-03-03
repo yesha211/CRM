@@ -1,9 +1,7 @@
-import { NavigationTree } from '@/@types/navigation'
-import { ColumnDef, DataTable } from '@/components/shared'
+import { ColumnDef } from '@/components/shared'
 import { Checkbox } from '@/components/ui'
-import testingNavigationConfig from '@/configs/navigation.config/testing.navigation.config'
-import { NAV_ITEM_TYPE_ITEM } from '@/constants/navigation.constant'
 import React, { useMemo } from 'react'
+import Search from './Search'
 
 interface UserPermissionType {
     roleId: string
@@ -53,16 +51,6 @@ const UserPermission = () => {
             canExport: false,
         },
     ]
-
-    const extractNavItems = (navConfig: NavigationTree[]): NavigationTree[] => {
-        return navConfig.flatMap((item) =>
-            item.type === NAV_ITEM_TYPE_ITEM
-                ? item
-                : extractNavItems(item.subMenu || []),
-        )
-    }
-
-    const tempData2 = extractNavItems(testingNavigationConfig)
 
     const columns: ColumnDef<UserPermissionType>[] = useMemo(
         () => [
@@ -166,46 +154,10 @@ const UserPermission = () => {
         [],
     )
 
-    const columns2: ColumnDef<NavigationTree>[] = useMemo(
-        () => [
-            {
-                id: 'title',
-                header: 'Title',
-                accessorKey: 'title',
-            },
-            {
-                id: 'path',
-                header: 'Path',
-                accessorKey: 'path',
-            },
-            {
-                id: 'authority',
-                header: 'Authority',
-                accessorKey: 'authority',
-            },
-            {
-                id: 'type',
-                header: 'Type',
-                accessorKey: 'type',
-            },
-        ],
-        [],
-    )
-
     return (
         <div>
             <h3 className="mb-5">User Permission</h3>
-            <DataTable
-                key={tempData2[0].key}
-                columns={columns2}
-                data={tempData2}
-            />
-            <h3 className="mb-5">User Permission 2</h3>
-            <DataTable
-                key={tempData[0].roleId}
-                columns={columns}
-                data={tempData}
-            />
+            <Search />
         </div>
     )
 }
