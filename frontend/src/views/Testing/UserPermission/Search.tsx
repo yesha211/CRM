@@ -8,13 +8,14 @@ import { Checkbox } from '@/components/ui'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import testingNavigationConfig from '@/configs/navigation.config/testing.navigation.config'
 import widgetsNavigationConfig from '@/configs/navigation.config/widgets.navigation.config'
+import { NavigationTree } from '@/@types/navigation'
 
 type SearchData = {
     title: string
+    keyId: string
     url: string
     icon?: string
     category: string
-    categoryTitle: string
     canEdit?: boolean
     canDelete?: boolean
     canView?: boolean
@@ -24,50 +25,28 @@ type SearchData = {
     canExport?: boolean
 }
 
-type SearchResult = {
-    title: string
-    data: SearchData[]
-}
-
-type NavigationConfig = {
-    title: string
-    subMenu: {
-        title: string
-        path: string
-        icon?: string
-        type: string
-        subMenu: {
-            title: string
-            path: string
-            icon?: string
-            type: string
-        }[]
-    }[]
-}
-
-const transformNavigationConfig = (configs: NavigationConfig[]) => {
-    return configs.map((config) => ({
-        title: config.title,
-        data: config.subMenu.flatMap((sub) => {
+const transformNavigationConfig = (configs: NavigationTree[]) => {
+    return configs.flatMap((config) =>
+        config.subMenu.flatMap((sub) => {
             if (sub.type === 'item') {
                 return {
                     title: sub.title,
+                    keyId: sub.key,
                     url: sub.path,
                     icon: sub.icon,
                     category: config.title,
-                    categoryTitle: config.title,
                 }
             }
 
             return sub.subMenu.map((item) => ({
                 title: item.title,
+                keyId: item.key,
                 url: item.path,
                 icon: item.icon || sub.icon,
                 category: config.title,
-                categoryTitle: config.title,
             }))
         }),
-    }))
+    )
 }
 
 const transformedData = transformNavigationConfig([
@@ -76,53 +55,32 @@ const transformedData = transformNavigationConfig([
 ])
 
 const _Search = () => {
-    const [searchDialogOpen, setSearchDialogOpen] = useState(false)
-    const [searchResult, setSearchResult] =
-        useState<SearchResult[]>(transformedData)
     const [noResult, setNoResult] = useState(false)
-    const [filteredData, setFilteredData] = useState<SearchData[]>([])
+    const [filteredData, setFilteredData] =
+        useState<SearchData[]>(transformedData)
 
     const inputRef = useRef<HTMLInputElement>(null)
 
     const handleReset = () => {
-        setSearchResult(transformedData)
-        setFilteredData(transformedData.flatMap((category) => category.data))
+        setFilteredData(transformedData)
         setNoResult(false)
-    }
-
-    const handleSearchOpen = () => {
-        setSearchDialogOpen(true)
-        handleReset()
     }
 
     const debounceFn = debounce(handleDebounceFn, 200)
 
     async function handleDebounceFn(query: string) {
         if (!query.trim()) {
-            setSearchResult(transformedData)
-            setFilteredData(
-                transformedData.flatMap((category) => category.data),
-            )
-            setNoResult(false)
+            handleReset()
             return
         }
 
         const lowerCaseQuery = query.toLowerCase()
 
-        const filteredResults = transformedData
-            .map((category) => {
-                const filteredData = category.data.filter((item) =>
-                    item.title.toLowerCase().includes(lowerCaseQuery),
-                )
+        const filteredResults = transformedData.filter((item) =>
+            item.title.toLowerCase().includes(lowerCaseQuery),
+        )
 
-                return filteredData.length > 0
-                    ? { ...category, data: filteredData }
-                    : null
-            })
-            .filter(Boolean) as SearchResult[] // Remove empty categories
-
-        setSearchResult(filteredResults)
-        setFilteredData(filteredResults.flatMap((category) => category.data))
+        setFilteredData(filteredResults)
         setNoResult(filteredResults.length === 0)
     }
 
@@ -130,41 +88,27 @@ const _Search = () => {
         debounceFn(e.target.value)
     }
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-        if (
-            ((event.ctrlKey || event.metaKey) && event.key === 'k') ||
-            event.key === 'K'
-        ) {
-            event.preventDefault() // Prevents the default browser search (Ctrl + K in some browsers)
-            handleSearchOpen()
-        }
-    }
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown)
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown)
-        }
-    })
-
-    useEffect(() => {
-        if (searchDialogOpen) {
-            const timeout = setTimeout(() => inputRef.current?.focus(), 100)
-            return () => {
-                clearTimeout(timeout)
-            }
-        }
-    }, [searchDialogOpen])
-
     useEffect(() => {
         handleReset()
     }, [])
+
+    const handleCheckboxChange = (
+        keyId: string,
+        checked: boolean,
+        field: string,
+    ) => {
+        // Call your API here with the keyId, checked value, and field
+        console.log(
+            `Checkbox changed: keyId=${keyId}, checked=${checked}, field=${field}`,
+        )
+        // Example API call
+        // api.updatePermission({ keyId, checked, field })
+    }
 
     const columns: ColumnDef<SearchData>[] = [
         {
             header: 'Title',
             accessorKey: 'title',
-
             cell: (props) => {
                 const { title } = props.row.original
                 return (
@@ -182,17 +126,20 @@ const _Search = () => {
             enableSorting: false,
             accessorKey: 'category',
         },
-
         {
             id: 'canEdit',
             header: 'Can Edit',
             accessorKey: 'canEdit',
-
             cell: (props) => {
-                const { canEdit } = props.row.original
+                const { canEdit, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canEdit} />
+                        <Checkbox
+                            checked={canEdit}
+                            onChange={(checked) =>
+                                handleCheckboxChange(keyId, checked, 'canEdit')
+                            }
+                        />
                     </div>
                 )
             },
@@ -201,12 +148,20 @@ const _Search = () => {
             id: 'canDelete',
             header: 'Can Delete',
             accessorKey: 'canDelete',
-
             cell: (props) => {
-                const { canDelete } = props.row.original
+                const { canDelete, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canDelete} />
+                        <Checkbox
+                            checked={canDelete}
+                            onChange={(checked) =>
+                                handleCheckboxChange(
+                                    keyId,
+                                    checked,
+                                    'canDelete',
+                                )
+                            }
+                        />
                     </div>
                 )
             },
@@ -215,12 +170,16 @@ const _Search = () => {
             id: 'canView',
             header: 'Can View',
             accessorKey: 'canView',
-
             cell: (props) => {
-                const { canView } = props.row.original
+                const { canView, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canView} />
+                        <Checkbox
+                            checked={canView}
+                            onChange={(checked) =>
+                                handleCheckboxChange(keyId, checked, 'canView')
+                            }
+                        />
                     </div>
                 )
             },
@@ -229,12 +188,16 @@ const _Search = () => {
             id: 'canAdd',
             header: 'Can Add',
             accessorKey: 'canAdd',
-
             cell: (props) => {
-                const { canAdd } = props.row.original
+                const { canAdd, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canAdd} />
+                        <Checkbox
+                            checked={canAdd}
+                            onChange={(checked) =>
+                                handleCheckboxChange(keyId, checked, 'canAdd')
+                            }
+                        />
                     </div>
                 )
             },
@@ -243,12 +206,16 @@ const _Search = () => {
             id: 'canPrint',
             header: 'Can Print',
             accessorKey: 'canPrint',
-
             cell: (props) => {
-                const { canPrint } = props.row.original
+                const { canPrint, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canPrint} />
+                        <Checkbox
+                            checked={canPrint}
+                            onChange={(checked) =>
+                                handleCheckboxChange(keyId, checked, 'canPrint')
+                            }
+                        />
                     </div>
                 )
             },
@@ -257,12 +224,20 @@ const _Search = () => {
             id: 'canImport',
             header: 'Can Import',
             accessorKey: 'canImport',
-
             cell: (props) => {
-                const { canImport } = props.row.original
+                const { canImport, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canImport} />
+                        <Checkbox
+                            checked={canImport}
+                            onChange={(checked) =>
+                                handleCheckboxChange(
+                                    keyId,
+                                    checked,
+                                    'canImport',
+                                )
+                            }
+                        />
                     </div>
                 )
             },
@@ -271,12 +246,20 @@ const _Search = () => {
             id: 'canExport',
             header: 'Can Export',
             accessorKey: 'canExport',
-
             cell: (props) => {
-                const { canExport } = props.row.original
+                const { canExport, keyId } = props.row.original
                 return (
                     <div className="flex items-center justify-center">
-                        <Checkbox checked={canExport} />
+                        <Checkbox
+                            checked={canExport}
+                            onChange={(checked) =>
+                                handleCheckboxChange(
+                                    keyId,
+                                    checked,
+                                    'canExport',
+                                )
+                            }
+                        />
                     </div>
                 )
             },
@@ -286,11 +269,11 @@ const _Search = () => {
     return (
         <>
             <div>
-                <div className="px-4 flex items-center  border-b border-gray-200 dark:border-gray-600">
+                <div className="px-4 flex items-center border-b border-gray-200 dark:border-gray-600">
                     <HiOutlineSearch className="text-xl" />
                     <input
                         ref={inputRef}
-                        className="ring-0 outline-none w-full  p-4 text-base bg-transparent text-gray-900 dark:text-gray-100"
+                        className="ring-0 outline-none w-full p-4 text-base bg-transparent text-gray-900 dark:text-gray-100"
                         placeholder="Search..."
                         onChange={handleSearch}
                     />
