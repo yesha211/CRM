@@ -13,7 +13,7 @@ import { NavigationTree } from '@/@types/navigation'
 type SearchData = {
     title: string
     keyId: string
-    url: string
+    url?: string
     icon?: string
     category: string
     canEdit?: boolean
@@ -26,8 +26,14 @@ type SearchData = {
 }
 
 const transformNavigationConfig = (configs: NavigationTree[]) => {
-    return configs.flatMap((config) =>
-        config.subMenu.flatMap((sub) => {
+    return configs.flatMap((config) => {
+        const categoryEntry: SearchData = {
+            title: config.title,
+            keyId: config.key,
+            category: config.title,
+        }
+
+        const subEntries = config.subMenu.flatMap((sub) => {
             if (sub.type === 'item') {
                 return {
                     title: sub.title,
@@ -45,8 +51,10 @@ const transformNavigationConfig = (configs: NavigationTree[]) => {
                 icon: item.icon || sub.icon,
                 category: config.title,
             }))
-        }),
-    )
+        })
+
+        return [categoryEntry, ...subEntries]
+    })
 }
 
 const transformedData = transformNavigationConfig([
@@ -103,6 +111,19 @@ const _Search = () => {
         )
         // Example API call
         // api.updatePermission({ keyId, checked, field })
+
+        // Update the state to reflect the changes
+        setFilteredData((prevData) =>
+            prevData.map((item) => {
+                if (item.keyId === keyId) {
+                    return { ...item, [field]: checked }
+                }
+                if (item.category === keyId) {
+                    return { ...item, [field]: checked }
+                }
+                return item
+            }),
+        )
     }
 
     const columns: ColumnDef<SearchData>[] = [
@@ -279,7 +300,15 @@ const _Search = () => {
                     />
                 </div>
                 <div className="py-6 px-5 max-h-[550px] overflow-y-auto overflow-x-auto">
-                    <DataTable columns={columns} data={filteredData} />
+                    <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagingData={{
+                            total: filteredData.length,
+                            pageIndex: 1,
+                            pageSize: 100,
+                        }}
+                    />
                     {filteredData.length === 0 && noResult && (
                         <div className="my-10 text-center text-lg">
                             <span>No results for </span>
