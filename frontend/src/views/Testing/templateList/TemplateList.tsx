@@ -161,7 +161,6 @@ const TemplateList = () => {
     const dispatch = useAppDispatch()
 
     const [templateId, setTemplateId] = useState('')
-    const [selectValue, setSelectValue] = useState('')
     const [sTemplate_ID_options, setSTemplate_ID_options] = useState<
         { label?: string; value?: string }[]
     >([])
@@ -252,7 +251,7 @@ const TemplateList = () => {
     )
 
     const loadOptions = async (inputvalue: string) => {
-        if (inputvalue.length < 1) {
+        if (inputvalue.length < 2) {
             return []
         }
 
@@ -262,11 +261,11 @@ const TemplateList = () => {
             label: item.sTemplate_ID,
             value: item.sTemplateGUID,
         }))
-
+        console.log(updatedOptions)
         setSTemplate_ID_options(updatedOptions)
 
         return updatedOptions.filter(
-            (i) => i.label?.toLowerCase().includes(selectValue.toLowerCase()),
+            (i) => i.label?.toLowerCase().includes(inputvalue.toLowerCase()),
         )
     }
 
@@ -283,7 +282,6 @@ const TemplateList = () => {
                     value={sTemplate_ID_options.find(
                         ({ value }) => value === templateId,
                     )}
-                    onInputChange={(inputValue) => setSelectValue(inputValue)}
                     onChange={(option) =>
                         option && setTemplateId(option.value ?? '')
                     }

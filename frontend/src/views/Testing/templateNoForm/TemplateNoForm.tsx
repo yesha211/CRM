@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
@@ -69,7 +69,6 @@ const TemplateNoForm = () => {
         if (sTemplateGUIDURL) {
             dispatch(Get({ sTemplateGUID: sTemplateGUIDURL }))
         }
-        dispatch(listTemplates())
     }, [sTemplateGUIDURL, dispatch])
 
     useEffect(() => {
@@ -78,19 +77,34 @@ const TemplateNoForm = () => {
             setTemplateId(sTemplateData?.sTemplate_ID || '')
             setMessageToSend(sTemplateData?.sMessage_to_send || '')
             setIsInactive(sTemplateData?.bInActive || false)
+            setTemplateIdDD(sTemplateData?.sTemplateGUID || '')
         }
     }, [sTemplateData, sTemplateGUIDURL])
 
-    useEffect(() => {
-        if (templateIdData.length > 0) {
+    const loadOptions = useCallback(
+        async (inputValue: string) => {
+            await dispatch(listTemplates())
+
             const updatedOptions = templateIdData.map((item) => ({
                 label: item.sTemplate_ID,
                 value: item.sTemplateGUID,
             }))
+
             setSTemplate_ID_options(updatedOptions)
-            setTemplateIdDD(sTemplateData?.sTemplateGUID || '')
+
+            return updatedOptions.filter(
+                (i) =>
+                    i.label?.toLowerCase().includes(inputValue.toLowerCase()),
+            )
+        },
+        [dispatch, templateIdData],
+    )
+
+    useEffect(() => {
+        if (sTemplateData?.sTemplateGUID && sTemplate_ID_options.length === 0) {
+            loadOptions('')
         }
-    }, [templateIdData, sTemplateData])
+    }, [sTemplateData, sTemplate_ID_options.length, loadOptions])
 
     const onFormSubmit = async () => {
         const formData: Create_Req_Data = {
@@ -154,22 +168,6 @@ const TemplateNoForm = () => {
 
     const onDelete = () => {
         console.log('Delete')
-    }
-
-    console.log('templateIdData', templateIdData)
-    console.log('sTemplate_ID_options', sTemplate_ID_options)
-
-    const loadOptions = async (inputvalue: string) => {
-        const updatedOptions = templateIdData.map((item) => ({
-            label: item.sTemplate_ID,
-            value: item.sTemplateGUID,
-        }))
-
-        setSTemplate_ID_options(updatedOptions)
-
-        return updatedOptions.filter(
-            (i) => i.label?.toLowerCase().includes(inputvalue.toLowerCase()),
-        )
     }
 
     return (
