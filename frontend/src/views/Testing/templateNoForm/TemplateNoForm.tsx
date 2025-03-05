@@ -12,10 +12,12 @@ import reducer, {
     Get,
     Update,
     useAppSelector,
+    listTemplates,
 } from '@/store/Master/template'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FiSave, FiTrash } from 'react-icons/fi'
 import { injectReducer } from '@/store'
+import AsyncSelect from 'react-select/async'
 
 injectReducer('MAction_Template', reducer)
 
@@ -54,10 +56,20 @@ const TemplateNoForm = () => {
         (state) => state.MAction_Template.data.Get_State.data,
     )
 
+    const templateIdData = useAppSelector(
+        (state) => state.MAction_Template?.data?.listTemplates_State.data ?? [],
+    )
+
+    const [templateIdDD, setTemplateIdDD] = useState('')
+    const [sTemplate_ID_options, setSTemplate_ID_options] = useState<
+        { label?: string; value?: string }[]
+    >([])
+
     useEffect(() => {
         if (sTemplateGUIDURL) {
             dispatch(Get({ sTemplateGUID: sTemplateGUIDURL }))
         }
+        dispatch(listTemplates())
     }, [sTemplateGUIDURL, dispatch])
 
     useEffect(() => {
@@ -68,6 +80,17 @@ const TemplateNoForm = () => {
             setIsInactive(sTemplateData?.bInActive || false)
         }
     }, [sTemplateData, sTemplateGUIDURL])
+
+    useEffect(() => {
+        if (templateIdData.length > 0) {
+            const updatedOptions = templateIdData.map((item) => ({
+                label: item.sTemplate_ID,
+                value: item.sTemplateGUID,
+            }))
+            setSTemplate_ID_options(updatedOptions)
+            setTemplateIdDD(sTemplateData?.sTemplateGUID || '')
+        }
+    }, [templateIdData, sTemplateData])
 
     const onFormSubmit = async () => {
         const formData: Create_Req_Data = {
@@ -131,6 +154,22 @@ const TemplateNoForm = () => {
 
     const onDelete = () => {
         console.log('Delete')
+    }
+
+    console.log('templateIdData', templateIdData)
+    console.log('sTemplate_ID_options', sTemplate_ID_options)
+
+    const loadOptions = async (inputvalue: string) => {
+        const updatedOptions = templateIdData.map((item) => ({
+            label: item.sTemplate_ID,
+            value: item.sTemplateGUID,
+        }))
+
+        setSTemplate_ID_options(updatedOptions)
+
+        return updatedOptions.filter(
+            (i) => i.label?.toLowerCase().includes(inputvalue.toLowerCase()),
+        )
     }
 
     return (
@@ -218,6 +257,29 @@ const TemplateNoForm = () => {
                                     {errors.sTemplate_ID}
                                 </p>
                             )}
+                        </div>
+                    </div>
+                    <div
+                        id="Grid2_R2"
+                        className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
+                    >
+                        <div id="Grid2_R2_C1" className="lg:col-span-12 ">
+                            <label className="font-semibold space-y-44">
+                                Template ID
+                            </label>
+                            <Select
+                                cacheOptions
+                                loadOptions={loadOptions}
+                                componentAs={AsyncSelect}
+                                placeholder="Choose TemplateID"
+                                value={sTemplate_ID_options.find(
+                                    ({ value }) => value === templateIdDD,
+                                )}
+                                onChange={(option) =>
+                                    option &&
+                                    setTemplateIdDD(option.value ?? '')
+                                }
+                            />
                         </div>
                     </div>
                     <div

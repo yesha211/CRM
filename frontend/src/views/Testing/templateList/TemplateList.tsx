@@ -4,16 +4,25 @@ import reducer, {
     useAppDispatch,
     listTemplatesALL,
     Delete,
+    listTemplates,
 } from '@/store/Master/template'
 import { useEffect, useMemo, useState } from 'react'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import { Badge, Checkbox, Input, Notification, toast } from '@/components/ui'
+import {
+    Badge,
+    Checkbox,
+    Input,
+    Notification,
+    Select,
+    toast,
+} from '@/components/ui'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ConfirmDialog } from '@/components/shared'
+import AsyncSelect from 'react-select/async'
 
 injectReducer('MAction_Template', reducer)
 
@@ -49,9 +58,12 @@ export type OnDeleteCallback = React.Dispatch<React.SetStateAction<boolean>>
 const ActionColumn = ({ row }: { row: TemplateType }) => {
     const { textTheme } = useThemeClass()
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     const onEdit = () => {
-        console.log('Edit', row)
+        navigate(
+            `/testing/templateDetailNoForm?sTemplateGUID=${row.sTemplateGUID}`,
+        )
     }
 
     const onDelete = async () => {
@@ -142,7 +154,17 @@ const TemplateList = () => {
             state.MAction_Template?.data?.listTemplatesALL_State?.data ?? [],
     ) as TemplateType[]
 
+    const templateIdData = useAppSelector(
+        (state) => state.MAction_Template?.data?.listTemplates_State.data ?? [],
+    )
+
     const dispatch = useAppDispatch()
+
+    const [templateId, setTemplateId] = useState('')
+    const [selectValue, setSelectValue] = useState('')
+    const [sTemplate_ID_options, setSTemplate_ID_options] = useState<
+        { label?: string; value?: string }[]
+    >([])
 
     useEffect(() => {
         dispatch(listTemplatesALL())
@@ -229,9 +251,44 @@ const TemplateList = () => {
         [],
     )
 
+    const loadOptions = async (inputvalue: string) => {
+        if (inputvalue.length < 1) {
+            return []
+        }
+
+        await dispatch(listTemplates())
+
+        const updatedOptions = templateIdData.map((item) => ({
+            label: item.sTemplate_ID,
+            value: item.sTemplateGUID,
+        }))
+
+        setSTemplate_ID_options(updatedOptions)
+
+        return updatedOptions.filter(
+            (i) => i.label?.toLowerCase().includes(selectValue.toLowerCase()),
+        )
+    }
+
     return (
         <div>
             <h3 className="mb-5">Template List</h3>
+            <div className="my-5">
+                <label className="font-semibold space-y-44">Template ID</label>
+                <Select
+                    cacheOptions
+                    loadOptions={loadOptions}
+                    componentAs={AsyncSelect}
+                    placeholder="Choose TemplateID"
+                    value={sTemplate_ID_options.find(
+                        ({ value }) => value === templateId,
+                    )}
+                    onInputChange={(inputValue) => setSelectValue(inputValue)}
+                    onChange={(option) =>
+                        option && setTemplateId(option.value ?? '')
+                    }
+                />
+            </div>
             <DataTable
                 key={templateData.length}
                 pagingData={{
