@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
@@ -69,6 +69,7 @@ const TemplateNoForm = () => {
         if (sTemplateGUIDURL) {
             dispatch(Get({ sTemplateGUID: sTemplateGUIDURL }))
         }
+        dispatch(listTemplates())
     }, [sTemplateGUIDURL, dispatch])
 
     useEffect(() => {
@@ -81,30 +82,15 @@ const TemplateNoForm = () => {
         }
     }, [sTemplateData, sTemplateGUIDURL])
 
-    const loadOptions = useCallback(
-        async (inputValue: string) => {
-            await dispatch(listTemplates())
-
+    useEffect(() => {
+        if (templateIdData.length > 0) {
             const updatedOptions = templateIdData.map((item) => ({
                 label: item.sTemplate_ID,
                 value: item.sTemplateGUID,
             }))
-
             setSTemplate_ID_options(updatedOptions)
-
-            return updatedOptions.filter(
-                (i) =>
-                    i.label?.toLowerCase().includes(inputValue.toLowerCase()),
-            )
-        },
-        [dispatch, templateIdData],
-    )
-
-    useEffect(() => {
-        if (sTemplateData?.sTemplateGUID && sTemplate_ID_options.length === 0) {
-            loadOptions('')
         }
-    }, [sTemplateData, sTemplate_ID_options.length, loadOptions])
+    }, [templateIdData, sTemplateData])
 
     const onFormSubmit = async () => {
         const formData: Create_Req_Data = {
@@ -168,6 +154,25 @@ const TemplateNoForm = () => {
 
     const onDelete = () => {
         console.log('Delete')
+    }
+
+    const loadOptions = async (inputvalue: string) => {
+        if (inputvalue.length < 2) {
+            return []
+        }
+
+        await dispatch(listTemplates())
+
+        const updatedOptions = templateIdData.map((item) => ({
+            label: item.sTemplate_ID,
+            value: item.sTemplateGUID,
+        }))
+        console.log(updatedOptions)
+        setSTemplate_ID_options(updatedOptions)
+
+        return updatedOptions.filter(
+            (i) => i.label?.toLowerCase().includes(inputvalue.toLowerCase()),
+        )
     }
 
     return (
