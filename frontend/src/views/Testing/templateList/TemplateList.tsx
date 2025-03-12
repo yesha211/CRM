@@ -11,6 +11,7 @@ import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
 import {
     Badge,
+    Button,
     Checkbox,
     Input,
     Notification,
@@ -164,6 +165,7 @@ const TemplateList = () => {
     const [sTemplate_ID_options, setSTemplate_ID_options] = useState<
         { label?: string; value?: string }[]
     >([])
+    const [selectedRows, setSelectedRows] = useState<TemplateType[]>([])
 
     useEffect(() => {
         dispatch(listTemplatesALL())
@@ -171,19 +173,6 @@ const TemplateList = () => {
 
     const columns: ColumnDef<TemplateType>[] = useMemo(
         () => [
-            {
-                header: 'Inactive',
-                accessorKey: 'bInActive',
-                sortable: true,
-                cell: (props) => {
-                    const { bInActive } = props.row.original
-                    return (
-                        <div className="flex items-center justify-center">
-                            <Checkbox readOnly checked={bInActive} />
-                        </div>
-                    )
-                },
-            },
             {
                 header: 'Template ID',
                 accessorKey: 'sTemplate_ID',
@@ -246,12 +235,25 @@ const TemplateList = () => {
                 id: 'action',
                 cell: (props) => <ActionColumn row={props.row.original} />,
             },
+            {
+                header: 'Inactive',
+                accessorKey: 'bInActive',
+                sortable: true,
+                cell: (props) => {
+                    const { bInActive } = props.row.original
+                    return (
+                        <div className="flex items-center justify-center">
+                            <Checkbox readOnly checked={bInActive} />
+                        </div>
+                    )
+                },
+            },
         ],
         [],
     )
 
     const loadOptions = async (inputvalue: string) => {
-        if (inputvalue.length < 2) {
+        if (inputvalue.length < 1) {
             return []
         }
 
@@ -269,26 +271,76 @@ const TemplateList = () => {
         )
     }
 
+    const handleRowSelect = (checked: boolean, row: TemplateType) => {
+        setSelectedRows((prevSelectedRows) => {
+            if (checked) {
+                return [...prevSelectedRows, row]
+            } else {
+                return prevSelectedRows.filter(
+                    (selectedRow) =>
+                        selectedRow.sTemplateGUID !== row.sTemplateGUID,
+                )
+            }
+        })
+    }
+
+    const handleAllRowSelect = (checked: boolean) => {
+        setSelectedRows(checked ? templateData : [])
+    }
+
+    const handleSubmit = () => {
+        toast.push(
+            <Notification
+                title={
+                    selectedRows.length > 0
+                        ? 'Selected Rows ID'
+                        : 'No Selected Rows ID'
+                }
+                type="info"
+                duration={2500}
+            >
+                {selectedRows.map((row) => row.sTemplate_ID).join(', ')}
+            </Notification>,
+            {
+                placement: 'top-center',
+            },
+        )
+    }
+
     return (
         <div>
             <h3 className="mb-5">Template List</h3>
-            <div className="my-5">
-                <label className="font-semibold space-y-44">Template ID</label>
-                <Select
-                    cacheOptions
-                    loadOptions={loadOptions}
-                    componentAs={AsyncSelect}
-                    placeholder="Choose TemplateID"
-                    value={sTemplate_ID_options.find(
-                        ({ value }) => value === templateId,
-                    )}
-                    onChange={(option) =>
-                        option && setTemplateId(option.value ?? '')
-                    }
-                />
+            <div className="my-5 flex gap-5 justify-between">
+                <div className="w-full">
+                    <label className="font-semibold space-y-44">
+                        Template ID
+                    </label>
+                    <Select
+                        cacheOptions
+                        loadOptions={loadOptions}
+                        componentAs={AsyncSelect}
+                        placeholder="Choose TemplateID"
+                        value={sTemplate_ID_options.find(
+                            ({ value }) => value === templateId,
+                        )}
+                        onChange={(option) =>
+                            option && setTemplateId(option.value ?? '')
+                        }
+                    />
+                </div>
+                <div className="my-5">
+                    <Button
+                        className="mr-auto"
+                        variant="default"
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </Button>
+                </div>
             </div>
             <DataTable
                 key={templateData.length}
+                selectable
                 pagingData={{
                     total: templateData.length,
                     pageIndex: 1,
@@ -296,6 +348,8 @@ const TemplateList = () => {
                 }}
                 columns={columns}
                 data={templateData}
+                onCheckBoxChange={handleRowSelect}
+                onIndeterminateCheckBoxChange={handleAllRowSelect}
             />
         </div>
     )
