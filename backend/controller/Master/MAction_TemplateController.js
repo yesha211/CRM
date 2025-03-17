@@ -237,3 +237,32 @@ exports.updateStatus = async (req, res, next) => {
   res.status(200);
   res.json({ msg: "Record Updated !" });
 };
+exports.updatebInActive = async (req, res, next) => {
+  const { sTemplateGUID, bInActive } = req.body;
+  let results;
+  let rows;
+  const pool = req.pool;
+  let var_bInActive;
+  if (bInActive == 1) {
+    var_bInActive = 0;
+  } else {
+    var_bInActive = 1;
+  }
+  let updatedMAction_Template;
+  try {
+    await pool.query(
+      `UPDATE MAction_Template SET bInActive = ? WHERE sTemplateGUID = ? `,
+      [var_bInActive, sTemplateGUID]
+    );
+    const [rows] = await pool.query(
+      `SELECT * FROM MAction_Template WHERE sTemplateGUID = ? `,
+      [sTemplateGUID]
+    );
+    updatedMAction_Template = rows;
+  } catch (err) {
+    const error = new ErrorHandler("Error While Updating !", 500);
+    return next(error);
+  }
+  res.status(200);
+  res.json({ msg: "Record Updated !", data: updatedMAction_Template });
+};

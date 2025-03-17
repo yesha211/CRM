@@ -3,13 +3,13 @@ import reducer, {
     useAppSelector,
     useAppDispatch,
     listTemplatesALL,
-    MAction_TemplateupdateStatus,
     Delete,
+    MAction_TemplateupdatebInActive,
 } from '@/store/Master/template'
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable, { DataTableResetHandle } from '@/components/shared/DataTable'
-import { Badge, Button, Checkbox, Notification, toast } from '@/components/ui'
+import { Badge, Checkbox, Notification, toast } from '@/components/ui'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
@@ -149,14 +149,15 @@ const TemplateList = () => {
     const [templateData, setTemplateData] =
         useState<TemplateType[]>(reduxTemplateData)
 
+    const loading = useAppSelector(
+        (state) => state.MAction_Template?.data?.loading,
+    )
+
     const dispatch = useAppDispatch()
     const dataTableRef = useRef<DataTableResetHandle>(null) // Ref for DataTable
 
-    const [selectedRows, setSelectedRows] = useState<
-        { sTemplateGUID: string }[]
-    >([])
-
     useEffect(() => {
+        dispatch(listTemplatesALL())
         dispatch(listTemplatesALL())
     }, [dispatch, location.pathname])
 
@@ -164,8 +165,42 @@ const TemplateList = () => {
         setTemplateData(reduxTemplateData)
     }, [reduxTemplateData])
 
+    const onCheckboxChange = useCallback(
+        async (checked: boolean, sTemplateGUID: string) => {
+            await dispatch(
+                MAction_TemplateupdatebInActive({
+                    sTemplateGUID,
+                    bInActive: checked,
+                }),
+            )
+            await dispatch(listTemplatesALL())
+        },
+        [dispatch],
+    )
+
     const columns: ColumnDef<TemplateType>[] = useMemo(
         () => [
+            {
+                header: 'Inactive',
+                accessorKey: 'bInActive',
+                sortable: true,
+                cell: (props) => {
+                    const { bInActive, sTemplateGUID } = props.row.original
+                    return (
+                        <div className="flex items-center justify-center">
+                            <Checkbox
+                                checked={bInActive}
+                                onChange={(checked) =>
+                                    onCheckboxChange(
+                                        checked,
+                                        sTemplateGUID ?? '',
+                                    )
+                                }
+                            />
+                        </div>
+                    )
+                },
+            },
             {
                 header: 'Template ID',
                 accessorKey: 'sTemplate_ID',
@@ -209,127 +244,22 @@ const TemplateList = () => {
                     return <p>{sMessage_to_send}</p>
                 },
             },
-            {
-                header: 'Inactive',
-                accessorKey: 'bInActive',
-                sortable: true,
-                cell: (props) => {
-                    const { bInActive } = props.row.original
-                    return (
-                        <div className="flex items-center justify-center">
-                            <Checkbox readOnly checked={bInActive} />
-                        </div>
-                    )
-                },
-            },
+
             {
                 header: '',
                 id: 'action',
                 cell: (props) => <ActionColumn row={props.row.original} />,
             },
         ],
-        [],
+        [onCheckboxChange],
     )
-
-    const handleRowSelect = (checked: boolean, row: TemplateType) => {
-        setSelectedRows((prevSelectedRows) => {
-            if (checked) {
-                return [
-                    ...prevSelectedRows,
-                    { sTemplateGUID: row.sTemplateGUID ?? '' },
-                ]
-            } else {
-                return prevSelectedRows.filter(
-                    (selectedRow) =>
-                        selectedRow.sTemplateGUID !== (row.sTemplateGUID ?? ''),
-                )
-            }
-        })
-    }
-
-    const handleAllRowSelect = (checked: boolean) => {
-        setSelectedRows(
-            checked
-                ? templateData.map((row) => ({
-                      sTemplateGUID: row.sTemplateGUID ?? '',
-                  }))
-                : [],
-        )
-    }
-
-    const handleActivate = async () => {
-        console.log(selectedRows)
-        const bInActive = 1
-        await dispatch(
-            MAction_TemplateupdateStatus({ data: selectedRows, bInActive }),
-        )
-        await dispatch(listTemplatesALL())
-        setSelectedRows([]) // Clear selected rows
-        dataTableRef.current?.resetSelected() // Reset DataTable selection
-        toast.push(
-            <Notification
-                title={'Successfully Activated'}
-                type="success"
-                duration={2500}
-            >
-                Template successfully activated
-            </Notification>,
-            {
-                placement: 'top-center',
-            },
-        )
-    }
-
-    const handleDeActivate = async () => {
-        console.log(selectedRows)
-        const bInActive = 0
-        await dispatch(
-            MAction_TemplateupdateStatus({ data: selectedRows, bInActive }),
-        )
-        await dispatch(listTemplatesALL())
-        setSelectedRows([]) // Clear selected rows
-        dataTableRef.current?.resetSelected() // Reset DataTable selection
-        toast.push(
-            <Notification
-                title={'Successfully Deactivated'}
-                type="success"
-                duration={2500}
-            >
-                Template successfully deactivated
-            </Notification>,
-            {
-                placement: 'top-center',
-            },
-        )
-    }
 
     return (
         <div>
-            <h3 className="mb-5">Template List</h3>
-            <div className="my-5  grid grid-cols-2 gap-5">
-                <div>
-                    <Button
-                        className="w-full"
-                        variant="default"
-                        onClick={handleActivate}
-                    >
-                        Activate
-                    </Button>
-                </div>
-                <div>
-                    <Button
-                        className="w-full"
-                        variant="default"
-                        onClick={handleDeActivate}
-                    >
-                        Deactivate
-                    </Button>
-                </div>
-            </div>
+            <h3 className="mb-5">Template List Chekbox Single</h3>
             <DataTable
                 ref={dataTableRef} // Attach ref to DataTable
                 key={templateData.length}
-                selectable
                 pagingData={{
                     total: templateData.length,
                     pageIndex: 1,
@@ -337,8 +267,7 @@ const TemplateList = () => {
                 }}
                 columns={columns}
                 data={templateData}
-                onCheckBoxChange={handleRowSelect}
-                onIndeterminateCheckBoxChange={handleAllRowSelect}
+                loading={loading} // Pass loading state to DataTable
             />
         </div>
     )

@@ -21,9 +21,21 @@ const testingRoute: Routes = [
         authority: [],
     },
     {
+        key: 'nav.testing.templateListInput',
+        path: '/testing/templateListInput',
+        component: lazy(() => import('@/views/Testing/templateListInput')),
+        authority: [],
+    },
+    {
         key: 'nav.testing.templateListCHK',
         path: '/testing/templateListCHK',
         component: lazy(() => import('@/views/Testing/templateListCHK')),
+        authority: [],
+    },
+    {
+        key: 'nav.testing.templateListCHKSingle',
+        path: '/testing/templateListCHKSingle',
+        component: lazy(() => import('@/views/Testing/templateListCHKSingle')),
         authority: [],
     },
     {

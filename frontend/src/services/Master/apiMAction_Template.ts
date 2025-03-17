@@ -69,3 +69,13 @@ export async function apiupdateStatus<T, U extends Record<string, unknown>>(
         data,
     })
 }
+
+export async function apiupdatebInActive<T, U extends Record<string, unknown>>(
+    data: U,
+) {
+    return ApiService.fetchData<T>({
+        url: '/mactiontemplate/updatebinactive',
+        method: 'put',
+        data,
+    })
+}

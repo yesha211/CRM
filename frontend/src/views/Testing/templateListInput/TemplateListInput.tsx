@@ -4,18 +4,16 @@ import reducer, {
     useAppDispatch,
     listTemplatesALL,
     Delete,
-    listTemplates,
 } from '@/store/Master/template'
 import { useEffect, useMemo, useState } from 'react'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import { Badge, Checkbox, Notification, Select, toast } from '@/components/ui'
+import { Badge, Checkbox, Input, Notification, toast } from '@/components/ui'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { listTemplatesALL_Res } from '@/@types/interfaces/Master/MAction_Template/listTemplatesALLInterface'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ConfirmDialog } from '@/components/shared'
-import AsyncSelect from 'react-select/async'
 
 injectReducer('MAction_Template', reducer)
 
@@ -147,16 +145,7 @@ const TemplateList = () => {
             state.MAction_Template?.data?.listTemplatesALL_State?.data ?? [],
     ) as TemplateType[]
 
-    const templateIdData = useAppSelector(
-        (state) => state.MAction_Template?.data?.listTemplates_State.data ?? [],
-    )
-
     const dispatch = useAppDispatch()
-
-    const [templateId, setTemplateId] = useState('')
-    const [sTemplate_ID_options, setSTemplate_ID_options] = useState<
-        { label?: string; value?: string }[]
-    >([])
 
     useEffect(() => {
         dispatch(listTemplatesALL())
@@ -183,7 +172,7 @@ const TemplateList = () => {
                 sortable: true,
                 cell: (props) => {
                     const { sTemplate_ID } = props.row.original
-                    return <p className="w-[150px]">{sTemplate_ID}</p>
+                    return <Input className="w-[150px]">{sTemplate_ID}</Input>
                 },
             },
 
@@ -231,47 +220,9 @@ const TemplateList = () => {
         [],
     )
 
-    const loadOptions = async (inputvalue: string) => {
-        if (inputvalue.length < 1) {
-            return []
-        }
-
-        await dispatch(listTemplates())
-
-        const updatedOptions = templateIdData.map((item) => ({
-            label: item.sTemplate_ID,
-            value: item.sTemplateGUID,
-        }))
-        console.log(updatedOptions)
-        setSTemplate_ID_options(updatedOptions)
-
-        return updatedOptions.filter(
-            (i) => i.label?.toLowerCase().includes(inputvalue.toLowerCase()),
-        )
-    }
-
     return (
         <div>
-            <h3 className="mb-5">Template List</h3>
-            <div className="my-5 flex gap-5 justify-between">
-                <div className="w-full">
-                    <label className="font-semibold space-y-44">
-                        Template ID
-                    </label>
-                    <Select
-                        cacheOptions
-                        loadOptions={loadOptions}
-                        componentAs={AsyncSelect}
-                        placeholder="Choose TemplateID"
-                        value={sTemplate_ID_options.find(
-                            ({ value }) => value === templateId,
-                        )}
-                        onChange={(option) =>
-                            option && setTemplateId(option.value ?? '')
-                        }
-                    />
-                </div>
-            </div>
+            <h3 className="mb-5">Template List Input Change</h3>
             <DataTable
                 key={templateData.length}
                 pagingData={{

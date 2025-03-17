@@ -9,6 +9,7 @@ import {
     apisetTemplateInActive,
     apiUpdate,
     apiupdateStatus,
+    apiupdatebInActive,
 } from '@/services/Master/apiMAction_Template'
 
 import { Delete_Req } from '@/@types/interfaces/Master/MAction_Template/DeleteInterface'
@@ -38,6 +39,11 @@ import {
     MAction_TemplateupdateStatus_Req,
     MAction_TemplateupdateStatus_Res,
 } from '@/@types/interfaces/Master/MAction_Template/MAction_TemplateupdateStatusInterface'
+
+import {
+    MAction_TemplateupdatebInActive_Req,
+    MAction_TemplateupdatebInActive_Res,
+} from '@/@types/interfaces/Master/MAction_Template/MAction_TemplateupdatebInActiveInterface'
 
 export const SLICE_NAME = 'MAction_Template'
 
@@ -128,6 +134,17 @@ export const MAction_TemplateupdateStatus = createAsyncThunk(
     },
 )
 
+type MAction_TemplateupdatebInActive_Req_Data =
+    MAction_TemplateupdatebInActive_Req & Record<string, unknown>
+
+export const MAction_TemplateupdatebInActive = createAsyncThunk(
+    SLICE_NAME + 'MAction_TemplateupdatebInActive',
+    async (data: MAction_TemplateupdatebInActive_Req_Data) => {
+        const response = await apiupdatebInActive(data)
+        return response.data as MAction_TemplateupdatebInActive_Res
+    },
+)
+
 export type MAction_TemplateState = {
     loading: boolean
     Get_State: Get_Res
@@ -138,6 +155,7 @@ export type MAction_TemplateState = {
     setTemplateInActive_State: setTemplateInActive_Res
     Update_State: Update_Res
     MAction_Template_updateStatus_State: MAction_TemplateupdateStatus_Res
+    MAction_Template_updatebInActive_State: MAction_TemplateupdatebInActive_Res
 }
 
 const initialState: MAction_TemplateState = {
@@ -150,6 +168,7 @@ const initialState: MAction_TemplateState = {
     setTemplateInActive_State: {},
     Update_State: {},
     MAction_Template_updateStatus_State: {},
+    MAction_Template_updatebInActive_State: {},
 }
 
 const MAction_TemplateSlice = createSlice({
@@ -256,6 +275,21 @@ const MAction_TemplateSlice = createSlice({
                 },
             )
             .addCase(MAction_TemplateupdateStatus.rejected, (state) => {
+                state.loading = false
+            })
+            // MAction_TemplateupdatebInActive
+            .addCase(MAction_TemplateupdatebInActive.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(
+                MAction_TemplateupdatebInActive.fulfilled,
+                (state, action) => {
+                    state.MAction_Template_updatebInActive_State =
+                        action.payload
+                    state.loading = false
+                },
+            )
+            .addCase(MAction_TemplateupdatebInActive.rejected, (state) => {
                 state.loading = false
             })
     },

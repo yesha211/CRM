@@ -305,7 +305,7 @@ const TemplateList = () => {
 
     return (
         <div>
-            <h3 className="mb-5">Template List</h3>
+            <h3 className="mb-5">Template List Checkbox</h3>
             <div className="my-5  grid grid-cols-2 gap-5">
                 <div>
                     <Button
