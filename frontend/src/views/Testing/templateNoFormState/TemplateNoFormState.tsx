@@ -1,25 +1,14 @@
 /* eslint-disable import/no-unresolved */
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
-import { Checkbox, Notification, Select, toast } from '@/components/ui'
+import { Checkbox, DatePicker, Radio, Select, TimeInput } from '@/components/ui'
 import { Create_Req } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
 import { AdaptableCard, RichTextEditor } from '@/components/shared'
-import reducer, {
-    useAppDispatch,
-    Create,
-    Get,
-    Update,
-    useAppSelector,
-    listTemplates,
-} from '@/store/Master/template'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { FiSave, FiTrash } from 'react-icons/fi'
-import { injectReducer } from '@/store'
-import AsyncSelect from 'react-select/async'
 
-injectReducer('MAction_Template', reducer)
+import { FiSave, FiTrash } from 'react-icons/fi'
+import TimeInputRange from '@/components/ui/TimeInput/TimeInputRange'
 
 export type SetSubmitting = (isSubmitting: boolean) => void
 
@@ -39,58 +28,39 @@ const sTemplate_Send_via_options = [
     { label: 'Both', value: 'Both' },
 ]
 
-const TemplateNoForm = () => {
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
+const colourOptions = [
+    { value: 'ocean', label: 'Ocean', color: '#00B8D9' },
+    { value: 'blue', label: 'Blue', color: '#0052CC' },
+    { value: 'purple', label: 'Purple', color: '#5243AA' },
+    { value: 'red', label: 'Red', color: '#FF5630' },
+    { value: 'orange', label: 'Orange', color: '#FF8B00' },
+    { value: 'yellow', label: 'Yellow', color: '#FFC400' },
+    { value: 'green', label: 'Green', color: '#36B37E' },
+    { value: 'forest', label: 'Forest', color: '#00875A' },
+    { value: 'slate', label: 'Slate', color: '#253858' },
+    { value: 'silver', label: 'Silver', color: '#666666' },
+]
 
+const TemplateNoForm = () => {
     const [sendVia, setSendVia] = useState('')
     const [templateId, setTemplateId] = useState('')
     const [messageToSend, setMessageToSend] = useState('')
     const [isInactive, setIsInactive] = useState(false)
     const [errors, setErrors] = useState<Record<string, string>>({})
 
-    const [searchParams] = useSearchParams()
-    const sTemplateGUIDURL = searchParams.get('sTemplateGUID')
+    const [date, setDate] = useState<Date | null>(null)
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+        null,
+        null,
+    ])
+    const [dateTime, setDateTime] = useState<Date | null>(null)
+    const [valueRadio, setValueRadio] = useState('')
+    const [timeValue, setTimeValue] = useState<Date | null>(null)
+    const [timeRangeValue, setTimeRangeValue] = useState<
+        [Date | null, Date | null]
+    >([null, null])
 
-    const sTemplateData = useAppSelector(
-        (state) => state.MAction_Template.data.Get_State.data,
-    )
-
-    const templateIdData = useAppSelector(
-        (state) => state.MAction_Template?.data?.listTemplates_State.data ?? [],
-    )
-
-    const [templateIdDD, setTemplateIdDD] = useState('')
-    const [sTemplate_ID_options, setSTemplate_ID_options] = useState<
-        { label?: string; value?: string }[]
-    >([])
-
-    useEffect(() => {
-        if (sTemplateGUIDURL) {
-            dispatch(Get({ sTemplateGUID: sTemplateGUIDURL }))
-        }
-        dispatch(listTemplates())
-    }, [sTemplateGUIDURL, dispatch])
-
-    useEffect(() => {
-        if (sTemplateGUIDURL && sTemplateData) {
-            setSendVia(sTemplateData?.sTemplate_Send_via || '')
-            setTemplateId(sTemplateData?.sTemplate_ID || '')
-            setMessageToSend(sTemplateData?.sMessage_to_send || '')
-            setIsInactive(sTemplateData?.bInActive || false)
-            setTemplateIdDD(sTemplateData?.sTemplateGUID || '')
-        }
-    }, [sTemplateData, sTemplateGUIDURL])
-
-    useEffect(() => {
-        if (templateIdData.length > 0) {
-            const updatedOptions = templateIdData.map((item) => ({
-                label: item.sTemplate_ID,
-                value: item.sTemplateGUID,
-            }))
-            setSTemplate_ID_options(updatedOptions)
-        }
-    }, [templateIdData, sTemplateData])
+    const [selectedColours, setSelectedColours] = useState<string[]>([])
 
     const onFormSubmit = async () => {
         const formData: Create_Req_Data = {
@@ -98,6 +68,13 @@ const TemplateNoForm = () => {
             sMessage_to_send: messageToSend,
             sTemplate_ID: templateId,
             sTemplate_Send_via: sendVia,
+            sDate: date,
+            sDateRange: dateRange,
+            sDateTime: dateTime,
+            sTimeValue: timeValue,
+            sTimeRangeValue: timeRangeValue,
+            sValueRadio: valueRadio,
+            sSelectedColours: selectedColours,
         }
         console.log(formData)
 
@@ -116,64 +93,26 @@ const TemplateNoForm = () => {
                 return
             }
         }
-
-        let response
-        if (sTemplateGUIDURL) {
-            response = await dispatch(
-                Update({ ...formData, sTemplateGUID: sTemplateGUIDURL }),
-            )
-        } else {
-            response = await dispatch(Create(formData))
-        }
-
-        if (
-            Update.fulfilled.match(response) ||
-            Create.fulfilled.match(response)
-        ) {
-            toast.push(
-                <Notification title={'Success'} type="success" duration={2500}>
-                    {sTemplateGUIDURL
-                        ? 'Template successfully updated'
-                        : 'Template successfully added'}
-                </Notification>,
-                {
-                    placement: 'top-center',
-                },
-            )
-            navigate('/testing/templateList')
-        } else {
-            toast.push(
-                <Notification title={'Error'} type="danger" duration={2500}>
-                    {response.error.message}
-                </Notification>,
-                {
-                    placement: 'top-center',
-                },
-            )
-        }
     }
 
     const onDelete = () => {
         console.log('Delete')
     }
 
-    const loadOptions = async (inputvalue: string) => {
-        if (inputvalue.length < 2) {
-            return []
-        }
+    const handleDatePickerChange = (date: Date | null) => {
+        setDate(date)
+    }
 
-        await dispatch(listTemplates())
+    const handleRangePickerChange = (date: [Date | null, Date | null]) => {
+        setDateRange(date)
+    }
 
-        const updatedOptions = templateIdData.map((item) => ({
-            label: item.sTemplate_ID,
-            value: item.sTemplateGUID,
-        }))
-        console.log(updatedOptions)
-        setSTemplate_ID_options(updatedOptions)
+    const handleDateTimeChange = (val: Date | null) => {
+        setDateTime(val)
+    }
 
-        return updatedOptions.filter(
-            (i) => i.label?.toLowerCase().includes(inputvalue.toLowerCase()),
-        )
+    const onChangeRadio = (value: string) => {
+        setValueRadio(value)
     }
 
     return (
@@ -184,7 +123,7 @@ const TemplateNoForm = () => {
                     className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
                 >
                     <div id="Grid1_R1_C1" className="lg:col-span-11 ">
-                        <h3 className="">Template without Formik</h3>
+                        <h3 className="">Template without Formik For States</h3>
                     </div>
                     <div id="Grid1_R1_C2" className="lg:col-span-1 ">
                         <div id="H_Flex1" className="flex flex-row ">
@@ -262,26 +201,101 @@ const TemplateNoForm = () => {
                                 </p>
                             )}
                         </div>
-                    </div>
+                    </div>{' '}
                     <div
-                        id="Grid2_R2"
+                        id="Grid2_R1"
                         className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
                     >
-                        <div id="Grid2_R2_C1" className="lg:col-span-12 ">
+                        <div id="Grid2_R1_C1" className="lg:col-span-4 ">
                             <label className="font-semibold space-y-44">
-                                Template ID
+                                Date Picker
+                            </label>
+                            <DatePicker
+                                placeholder="Pick a date"
+                                value={date}
+                                onChange={handleDatePickerChange}
+                            />
+                        </div>
+                        <div id="Grid2_R1_C2" className="lg:col-span-4 ">
+                            <label className="font-semibold space-y-44">
+                                Date Picker Range
+                            </label>
+                            <DatePicker.DatePickerRange
+                                placeholder="Select dates range"
+                                value={dateRange}
+                                onChange={handleRangePickerChange}
+                            />
+                        </div>{' '}
+                        <div id="Grid2_R1_C2" className="lg:col-span-4 ">
+                            <label className="font-semibold space-y-44">
+                                Date Time Picker
+                            </label>
+                            <DatePicker.DateTimepicker
+                                placeholder="Pick date & time"
+                                value={dateTime}
+                                onChange={handleDateTimeChange}
+                            />
+                        </div>
+                    </div>{' '}
+                    <div
+                        id="Grid2_R1"
+                        className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
+                    >
+                        <div id="Grid2_R1_C1" className="lg:col-span-6 ">
+                            <label className="font-semibold space-y-44">
+                                Time Picker
+                            </label>
+                            <TimeInput
+                                value={timeValue}
+                                onChange={setTimeValue}
+                            />
+                        </div>
+                        <div id="Grid2_R1_C2" className="lg:col-span-6 ">
+                            <label className="font-semibold space-y-44">
+                                Time Picker Range
+                            </label>
+                            <TimeInputRange
+                                value={timeRangeValue}
+                                onChange={setTimeRangeValue}
+                            />
+                        </div>
+                    </div>
+                    <div
+                        id="Grid2_R3"
+                        className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
+                    >
+                        <div id="Grid2_R3_C1" className="lg:col-span-12 ">
+                            <Radio.Group
+                                value={valueRadio}
+                                onChange={onChangeRadio}
+                            >
+                                <Radio value={'Apple'}>Apple</Radio>
+                                <Radio value={'Banana'}>Banana</Radio>
+                                <Radio value={'Cherry'}>Cherry</Radio>
+                            </Radio.Group>
+                        </div>
+                    </div>{' '}
+                    <div
+                        id="Grid2_R3"
+                        className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
+                    >
+                        <div id="Grid2_R3_C1" className="lg:col-span-12 ">
+                            <label className="font-semibold space-y-44">
+                                Multi Select Colors
                             </label>
                             <Select
-                                cacheOptions
-                                loadOptions={loadOptions}
-                                componentAs={AsyncSelect}
-                                placeholder="Choose TemplateID"
-                                value={sTemplate_ID_options.find(
-                                    ({ value }) => value === templateIdDD,
+                                isMulti
+                                placeholder="Please Select"
+                                value={colourOptions.filter((option) =>
+                                    selectedColours.includes(option.value),
                                 )}
-                                onChange={(option) =>
-                                    option &&
-                                    setTemplateIdDD(option.value ?? '')
+                                options={colourOptions}
+                                onChange={(selectedOptions) =>
+                                    setSelectedColours(
+                                        selectedOptions.map(
+                                            (option) => option.value,
+                                        ),
+                                    )
                                 }
                             />
                         </div>
