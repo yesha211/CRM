@@ -5,7 +5,7 @@ import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
 import { Checkbox, Notification, Select, toast } from '@/components/ui'
 import { Create_Req } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
-import { AdaptableCard } from '@/components/shared'
+import { AdaptableCard, RichTextEditor } from '@/components/shared'
 import reducer, {
     useAppDispatch,
     Create,
@@ -99,6 +99,7 @@ const TemplateNoForm = () => {
             sTemplate_ID: templateId,
             sTemplate_Send_via: sendVia,
         }
+        console.log(formData)
 
         try {
             await validationSchema.validate(formData, { abortEarly: false })
@@ -293,18 +294,16 @@ const TemplateNoForm = () => {
                             <label className="font-semibold space-y-44">
                                 Message to Send
                             </label>
-                            <Input
-                                textArea
+                            <RichTextEditor
                                 placeholder="Enter Message to Send"
-                                size="md"
                                 className={
                                     errors.sMessage_to_send
                                         ? 'border-red-500'
                                         : ''
                                 }
                                 value={messageToSend}
-                                onChange={(e) =>
-                                    setMessageToSend(e.target.value)
+                                onChange={(value: string) =>
+                                    setMessageToSend(value)
                                 }
                             />
                             {errors.sMessage_to_send && (
