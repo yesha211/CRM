@@ -209,3 +209,31 @@ exports.Update = async (req, res, next) => {
     data: updatedMAction_Template,
   });
 };
+
+exports.updateStatus = async (req, res, next) => {
+  const { bInActive, data } = req.body;
+  let results;
+  let rows;
+  const pool = req.pool;
+  let data_array = data;
+  data_array.forEach(async (var_array) => {
+    let updatedMAction_Template;
+    try {
+      await pool.query(
+        `UPDATE MAction_Template SET bInActive = ? WHERE sTemplateGUID = ? `,
+        [bInActive, var_array.sTemplateGUID]
+      );
+      const [rows] = await pool.query(
+        `SELECT * FROM MAction_Template WHERE sTemplateGUID = ? `,
+        [var_array.sTemplateGUID]
+      );
+      updatedMAction_Template = rows;
+    } catch (err) {
+      const error = new ErrorHandler("Error While Updating !", 400);
+      return next(error);
+    }
+  });
+
+  res.status(200);
+  res.json({ msg: "Record Updated !" });
+};

@@ -59,3 +59,13 @@ export async function apiUpdate<T, U extends Record<string, unknown>>(data: U) {
         data,
     })
 }
+
+export async function apiupdateStatus<T, U extends Record<string, unknown>>(
+    data: U,
+) {
+    return ApiService.fetchData<T>({
+        url: `/mactiontemplate/updatestatus`,
+        method: 'put',
+        data,
+    })
+}

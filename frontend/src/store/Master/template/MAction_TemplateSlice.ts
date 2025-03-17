@@ -8,6 +8,7 @@ import {
     apiCreate,
     apisetTemplateInActive,
     apiUpdate,
+    apiupdateStatus,
 } from '@/services/Master/apiMAction_Template'
 
 import { Delete_Req } from '@/@types/interfaces/Master/MAction_Template/DeleteInterface'
@@ -33,6 +34,10 @@ import {
     Update_Req,
     Update_Res,
 } from '@/@types/interfaces/Master/MAction_Template/UpdateInterface'
+import {
+    MAction_TemplateupdateStatus_Req,
+    MAction_TemplateupdateStatus_Res,
+} from '@/@types/interfaces/Master/MAction_Template/MAction_TemplateupdateStatusInterface'
 
 export const SLICE_NAME = 'MAction_Template'
 
@@ -112,6 +117,17 @@ export const Update = createAsyncThunk(
     },
 )
 
+type MAction_TemplateupdateStatus_Req_Data = MAction_TemplateupdateStatus_Req &
+    Record<string, unknown>
+
+export const MAction_TemplateupdateStatus = createAsyncThunk(
+    SLICE_NAME + 'MAction_TemplateupdateStatus',
+    async (data: MAction_TemplateupdateStatus_Req_Data) => {
+        const response = await apiupdateStatus(data)
+        return response.data as MAction_TemplateupdateStatus_Res
+    },
+)
+
 export type MAction_TemplateState = {
     loading: boolean
     Get_State: Get_Res
@@ -121,6 +137,7 @@ export type MAction_TemplateState = {
     Create_State: Create_Res
     setTemplateInActive_State: setTemplateInActive_Res
     Update_State: Update_Res
+    MAction_Template_updateStatus_State: MAction_TemplateupdateStatus_Res
 }
 
 const initialState: MAction_TemplateState = {
@@ -132,6 +149,7 @@ const initialState: MAction_TemplateState = {
     Create_State: {},
     setTemplateInActive_State: {},
     Update_State: {},
+    MAction_Template_updateStatus_State: {},
 }
 
 const MAction_TemplateSlice = createSlice({
@@ -224,6 +242,20 @@ const MAction_TemplateSlice = createSlice({
                 state.loading = false
             })
             .addCase(Update.rejected, (state) => {
+                state.loading = false
+            })
+            // MAction_TemplateupdateStatus
+            .addCase(MAction_TemplateupdateStatus.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(
+                MAction_TemplateupdateStatus.fulfilled,
+                (state, action) => {
+                    state.MAction_Template_updateStatus_State = action.payload
+                    state.loading = false
+                },
+            )
+            .addCase(MAction_TemplateupdateStatus.rejected, (state) => {
                 state.loading = false
             })
     },

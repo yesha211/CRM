@@ -10,6 +10,7 @@ const {
   listTemplatesALL,
   setTemplateInActive,
   Update,
+  updateStatus,
 } = require("../../controller/Master/MAction_TemplateController");
 const { ImageUpload } = require("../../utils/fileUpload");
 
@@ -28,5 +29,6 @@ router.get("/listtemplatesall", listTemplatesALL);
 router.post("/settemplateinactive", setTemplateInActive);
 
 router.put("/update", ImageUpload(), Update);
+router.put("/updatestatus", updateStatus);
 
 module.exports = router;
