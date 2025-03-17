@@ -5,7 +5,7 @@ import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
 import { Checkbox, Notification, Select, toast } from '@/components/ui'
 import { Create_Req } from '@/@types/interfaces/Master/MAction_Template/CreateInterface'
-import { AdaptableCard } from '@/components/shared'
+import { AdaptableCard, RichTextEditor } from '@/components/shared'
 import reducer, {
     useAppDispatch,
     Create,
@@ -47,6 +47,7 @@ const TemplateNoForm = () => {
     const [templateId, setTemplateId] = useState('')
     const [messageToSend, setMessageToSend] = useState('')
     const [isInactive, setIsInactive] = useState(false)
+
     const [errors, setErrors] = useState<Record<string, string>>({})
 
     const [searchParams] = useSearchParams()
@@ -123,6 +124,7 @@ const TemplateNoForm = () => {
             )
         } else {
             response = await dispatch(Create(formData))
+            console.log(formData)
         }
 
         if (
@@ -305,6 +307,33 @@ const TemplateNoForm = () => {
                                 value={messageToSend}
                                 onChange={(e) =>
                                     setMessageToSend(e.target.value)
+                                }
+                            />
+                            {errors.sMessage_to_send && (
+                                <p className="text-red-500 text-sm">
+                                    {errors.sMessage_to_send}
+                                </p>
+                            )}
+                        </div>
+                    </div>{' '}
+                    <div
+                        id="Grid2_R2"
+                        className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5 "
+                    >
+                        <div id="Grid2_R2_C1" className="lg:col-span-12 ">
+                            <label className="font-semibold space-y-44">
+                                Message to Send
+                            </label>
+                            <RichTextEditor
+                                placeholder="Enter Message to Send"
+                                className={
+                                    errors.sMessage_to_send
+                                        ? 'border-red-500'
+                                        : ''
+                                }
+                                value={messageToSend}
+                                onChange={(val: string) =>
+                                    setMessageToSend(val)
                                 }
                             />
                             {errors.sMessage_to_send && (
