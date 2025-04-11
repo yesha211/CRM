@@ -4,8 +4,9 @@ import reducer, {
     useAppDispatch,
     listTemplatesALL,
     Delete,
+    MAction_TemplateupdateTemplateID,
 } from '@/store/Master/template'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ColumnDef } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
 import { Badge, Checkbox, Input, Notification, toast } from '@/components/ui'
@@ -151,6 +152,19 @@ const TemplateList = () => {
         dispatch(listTemplatesALL())
     }, [dispatch, location.pathname])
 
+    const handleOnBlur = useCallback(
+        (e: React.FocusEvent<HTMLInputElement>, sTemplateGUID: string) => {
+            dispatch(
+                MAction_TemplateupdateTemplateID({
+                    sTemplateGUID,
+                    sTemplate_ID: e.target.value,
+                }),
+            )
+            dispatch(listTemplatesALL())
+        },
+        [dispatch],
+    )
+
     const columns: ColumnDef<TemplateType>[] = useMemo(
         () => [
             {
@@ -171,8 +185,14 @@ const TemplateList = () => {
                 accessorKey: 'sTemplate_ID',
                 sortable: true,
                 cell: (props) => {
-                    const { sTemplate_ID } = props.row.original
-                    return <Input className="w-[150px]">{sTemplate_ID}</Input>
+                    const { sTemplate_ID, sTemplateGUID } = props.row.original
+                    return (
+                        <Input
+                            className="w-[150px]"
+                            defaultValue={sTemplate_ID} // Use defaultValue instead of children
+                            onBlur={(e) => handleOnBlur(e, sTemplateGUID ?? '')}
+                        />
+                    )
                 },
             },
 
@@ -217,7 +237,7 @@ const TemplateList = () => {
                 cell: (props) => <ActionColumn row={props.row.original} />,
             },
         ],
-        [],
+        [handleOnBlur],
     )
 
     return (
