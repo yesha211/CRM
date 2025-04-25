@@ -9,13 +9,13 @@ const errorMiddleware = require("./utils/default/globalErrorHandler");
 dotenv.config();
 const app = express();
 
-const port = 3000;
+const port = 4000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow requests only from this origin
+    origin: "http://localhost:5174", // Allow requests only from this origin
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
     credentials: true, // If you’re sending cookies or HTTP authentication, set this to true
   })

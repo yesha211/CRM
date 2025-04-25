@@ -25,6 +25,7 @@ const testingNavigationConfig: NavigationTree[] = [
                 authority: [ADMIN, USER],
                 subMenu: [],
             },
+            
             {
                 key: 'testing.template',
                 path: '/testing/template',

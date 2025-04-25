@@ -4,10 +4,10 @@ const connectDatabase = () => {
   // Create a MySQL connection pool
   const pool = mysql.createPool({
     connectionLimit: 10, 
-    host:  process.env.host,
-    user: process.env.user,
-    password:  process.env.password,
-    database: process.env.database,
+    host: '103.76.231.167', 
+    user: 'miraaik1_navigator_crm', 
+    password: 'u8*y^w-E_R0H', 
+    database: 'miraaik1_navigator_crm' ,
     port: 3306
   });
 

@@ -8,6 +8,7 @@ const testingRoute: Routes = [
         component: lazy(() => import('@/views/Testing/customer')),
         authority: [],
     },
+    
     {
         key: 'nav.testing.template',
         path: '/testing/template',
