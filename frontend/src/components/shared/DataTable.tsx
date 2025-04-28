@@ -89,7 +89,7 @@ const IndeterminateCheckbox = (props: IndeterminateCheckboxProps) => {
     return (
         <Checkbox
             ref={ref}
-            className="mb-0"
+            className="mb-0 "
             onChange={(_, e) => handleChange(e)}
             {...rest}
         />
@@ -264,9 +264,9 @@ function _DataTable<T>(
                                             <div
                                                 className={classNames(
                                                     header.column.getCanSort() &&
-                                                        'cursor-pointer select-none point',
+                                                    'cursor-pointer select-none point',
                                                     loading &&
-                                                        'pointer-events-none'
+                                                    'pointer-events-none'
                                                 )}
                                                 onClick={header.column.getToggleSortingHandler()}
                                             >
@@ -280,8 +280,10 @@ function _DataTable<T>(
                                                         sort={header.column.getIsSorted()}
                                                     />
                                                 )}
+
                                             </div>
                                         )}
+
                                     </Th>
                                 )
                             })}
@@ -306,13 +308,20 @@ function _DataTable<T>(
                                     <Tr key={row.id}>
                                         {row.getVisibleCells().map((cell) => {
                                             return (
-                                                <Td key={cell.id}>
+                                                <Td
+                                                    key={cell.id}
+                                                    className="overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer transition-all duration-300 ease-in-out"
+                                                    onClick={(e) => {
+                                                        const target = e.currentTarget
+                                                        target.classList.toggle('expanded')
+                                                    }}
+                                                >
                                                     {flexRender(
-                                                        cell.column.columnDef
-                                                            .cell,
+                                                        cell.column.columnDef.cell,
                                                         cell.getContext()
                                                     )}
                                                 </Td>
+
                                             )
                                         })}
                                     </Tr>

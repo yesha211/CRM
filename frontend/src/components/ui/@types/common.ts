@@ -18,7 +18,7 @@ export declare namespace TypeAttributes {
     type Shape = 'round' | 'circle' | 'none'
     type Status = 'success' | 'warning' | 'danger' | 'info'
     type FormLayout = 'horizontal' | 'vertical' | 'inline'
-    type ControlSize = 'lg' | 'md' | 'sm'
+    type ControlSize = 'lg' | 'md' | 'sm' | 'xs'
     type MenuVariant = 'light' | 'dark' | 'themed' | 'transparent'
     type Direction = 'ltr' | 'rtl'
 }

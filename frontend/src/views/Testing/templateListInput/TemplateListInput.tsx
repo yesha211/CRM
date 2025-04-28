@@ -189,6 +189,7 @@ const TemplateList = () => {
                     return (
                         <Input
                             className="w-[150px]"
+                            size="xs"
                             defaultValue={sTemplate_ID} // Use defaultValue instead of children
                             onBlur={(e) => handleOnBlur(e, sTemplateGUID ?? '')}
                         />

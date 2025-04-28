@@ -1,33 +1,57 @@
-.table-default {
-  @apply table-auto min-w-full divide-y divide-gray-200 dark:divide-gray-700;
+
+.table-default,
+.table-flex {
+  @apply table-auto min-w-full divide-y divide-gray-300 dark:divide-gray-700 text-sm text-gray-700 dark:text-gray-200 ;
+
 
   thead {
-    @apply bg-gray-50 dark:bg-gray-700;
+    @apply bg-gray-50 dark:bg-gray-800 ;
+    
 
     > tr {
       > th {
-        @apply px-6 py-3 text-left rtl:text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100;
+        @apply px-6 py-5 text-left rtl:text-right text-xs font-bold uppercase tracking-wide text-gray-600 dark:text-gray-100;
       }
     }
   }
-
   tbody {
-    @apply divide-y divide-gray-200 dark:divide-gray-700;
+    @apply divide-y divide-gray-300 dark:divide-gray-700;
 
     > tr {
+      @apply hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 ease-in-out;
       > td {
-        @apply px-6 py-4;
+        @apply px-6 py-0.5 text-xs text-black dark:text-white;
+      }
+    }
+
+    > tr:nth-child(even) {
+      @apply bg-gray-50 dark:bg-gray-800;
+    }
+
+    > tr:nth-child(odd) {
+      @apply bg-gray-100 dark:bg-gray-900;
+    }
+
+    > tr {
+      @apply border-b border-gray-200 dark:border-gray-700;
+
+      &:last-child {
+        @apply border-b-0;
       }
     }
   }
+
 
   tfoot {
+    @apply bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600;
+
     > tr {
       > td {
-        @apply px-6 py-3 border-t border-gray-200 dark:border-gray-700;
+        @apply px-2 py-1 border-t border-gray-200 dark:border-gray-700 text-sm;
       }
     }
   }
+
 
   &.borderless-row {
     tbody {
@@ -36,103 +60,28 @@
   }
 }
 
-.table-flex {
-  @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
-
-  .thead {
-    @apply bg-gray-50 dark:bg-gray-700;
-
-    .tr {
-      .th {
-        @apply px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100;
-      }
-    }
-  }
-
-  .tbody {
-    @apply divide-y divide-gray-200 dark:divide-gray-700;
-
-    .tr {
-      .td {
-        @apply px-6 py-4;
-      }
-    }
-  }
-
-  .tfoot {
-    .tr {
-      .td {
-        @apply px-6 py-3 border-t dark:border-gray-700;
-      }
-    }
-  }
-}
-
-.table-virtual {
-  > div {
-    @apply divide-y divide-gray-200 dark:divide-gray-700;
-  }
-}
-
-.table-compact {
-  thead {
-    > tr {
-      > th {
-        @apply px-3 py-2 text-xs;
-      }
-    }
-  }
-
-  tbody {
-    > tr {
-      > td {
-        @apply px-3 py-2;
-      }
-    }
-  }
-
-  .thead {
-    > .tr {
-      > .th {
-        @apply px-3 py-2 text-xs;
-      }
-    }
-  }
-
-  .tbody {
-    > .tr {
-      > .td {
-        @apply px-3 py-2;
-      }
-    }
-  }
-}
 
 .table-hover {
   > tbody {
-    > tr:hover {
-      > * {
-        @apply bg-gray-100/50 dark:bg-gray-700/40;
-      }
-    }
-  }
+    > tr {
+      @apply transition-all duration-300 ease-in-out;
 
-  > .tbody {
-    > .tr:hover {
-      > * {
-        @apply bg-gray-100/50 dark:bg-gray-700/40;
+      &:hover > * {
+        @apply bg-gray-300 dark:bg-gray-600/30;
       }
     }
   }
 }
+
 
 .table-resizer {
   @apply right-0 h-full absolute top-0 z-10 border-r-2 border-gray-200 dark:border-gray-600 w-2;
   touch-action: none;
-
+  
   &.resizing {
   }
 }
+
 
 th,
 td {

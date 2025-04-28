@@ -171,7 +171,7 @@ const TemplateList = () => {
                 cell: (props) => {
                     const { bInActive } = props.row.original
                     return (
-                        <div className="flex items-center justify-center">
+                        <div className="flex justify-center w-[80px]">
                             <Checkbox readOnly checked={bInActive} />
                         </div>
                     )
@@ -183,7 +183,7 @@ const TemplateList = () => {
                 sortable: true,
                 cell: (props) => {
                     const { sTemplate_ID } = props.row.original
-                    return <p className="w-[150px]">{sTemplate_ID}</p>
+                    return <p className="w-[100px]">{sTemplate_ID}</p>
                 },
             },
 
@@ -218,10 +218,36 @@ const TemplateList = () => {
                 size: 200,
                 cell: (props) => {
                     const { sMessage_to_send } = props.row.original
-                    return <p>{sMessage_to_send}</p>
+                    return <p className="w-[200px]">{sMessage_to_send}</p>
                 },
             },
-
+            {
+                header: 'Message to Send',
+                accessorKey: 'sMessage_to_send',
+                size: 200,
+                cell: (props) => {
+                    const { sMessage_to_send } = props.row.original
+                    return <p className="w-[200px]">{sMessage_to_send}</p>
+                },
+            },
+            {
+                header: 'Message to Send',
+                accessorKey: 'sMessage_to_send',
+                size: 200,
+                cell: (props) => {
+                    const { sMessage_to_send } = props.row.original
+                    return <p className="w-[200px]">{sMessage_to_send}</p>
+                },
+            },
+            {
+                header: 'Message to Send',
+                accessorKey: 'sMessage_to_send',
+                size: 200,
+                cell: (props) => {
+                    const { sMessage_to_send } = props.row.original
+                    return <p className="w-[200px]">{sMessage_to_send}</p>
+                },
+            },
             {
                 header: '',
                 id: 'action',
@@ -273,11 +299,13 @@ const TemplateList = () => {
                 </div>
             </div>
             <DataTable
+           
+             
                 key={templateData.length}
                 pagingData={{
                     total: templateData.length,
                     pageIndex: 1,
-                    pageSize: 100,
+                    pageSize: 10,
                 }}
                 columns={columns}
                 data={templateData}

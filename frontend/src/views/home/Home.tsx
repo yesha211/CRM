@@ -1,5 +1,5 @@
 import Counter_1 from '@/components/ui/Widgets/Counter_1'
-import TimeLineWidget from '@/components/widgets/TimeLineWidget'
+import TimeLineWidget from '@/components/ui/Widgets/TimeLineWidget'
 import Counter_2 from '@/components/ui/Widgets/Counter_2'
 import {
     HiUserCircle,
@@ -145,9 +145,7 @@ const Home = () => {
         }
     ];
     
-    
-    
-    
+
     
     return (
         <>
@@ -179,9 +177,7 @@ const Home = () => {
             <div className="w-full mt-4 flex justify-center border-t border-gray-200 pt-4 gap-4">
                 <TimeLineWidget />
             </div>
-
-            </Card>
-           
+            </Card>          
         </>
     )
 }

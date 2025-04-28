@@ -23,7 +23,7 @@ export interface InputProps
     invalid?: boolean
     prefix?: string | ReactNode
     rows?: number
-    size?: TypeAttributes.ControlSize
+    size?: TypeAttributes.ControlSize 
     suffix?: string | ReactNode
     textArea?: boolean
     type?: HTMLInputTypeAttribute

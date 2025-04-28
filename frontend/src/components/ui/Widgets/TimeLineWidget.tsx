@@ -3,7 +3,7 @@ import { Avatar, AvatarProps } from '@/components/ui/Avatar'
 import { CommonProps } from '@/@types/common'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
-import { Tag } from '../ui'
+import Tag from '../Tag'
 
 const TimelineAvatar = ({ children, ...rest }: AvatarProps) => {
     return (
