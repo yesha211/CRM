@@ -87,10 +87,10 @@ const Counter_1 = ({ Icon, CardVariant, Value, label, Text }: {
 }) => {
     return (
         <Card className={getCardClass(CardVariant)}>
-            <h6 className={classNames("font-semibold mb-2 text-sm", getLabelColorClass(CardVariant))}>{label}</h6>
+            <h6 className={classNames("font-semibold mb-2 text-lg", getLabelColorClass(CardVariant))}>{label}</h6>
             <div className="flex justify-between items-center">
                 <div>
-                    <h3 className={classNames("font-bold", getLabelColorClass(CardVariant))}>{Value}</h3>
+                    <h2 className={classNames("font-bold", getLabelColorClass(CardVariant))}>{Value}</h2>
                 </div>
                 <div>
                     <Avatar
@@ -101,7 +101,7 @@ const Counter_1 = ({ Icon, CardVariant, Value, label, Text }: {
                 </div>
             </div>
             <div>
-                <p className={classNames("text-xs", getLabelColorClass(CardVariant))}>{Text}</p>
+                <p className={classNames("text-sm", getLabelColorClass(CardVariant))}>{Text}</p>
             </div>
         </Card>
     )

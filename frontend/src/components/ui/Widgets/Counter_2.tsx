@@ -2,10 +2,6 @@ import classNames from 'classnames'
 import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
 
-
-
-
-
 // Avatar variants with slightly lighter shades compared to card backgrounds
 const avatarVariants: Record<string | number | symbol, string> = {
     slate: "bg-slate-100 text-slate-600 dark:bg-slate-500 dark:text-slate-100",
@@ -84,7 +80,7 @@ const Counter_2 = ({ Icon, Value, label, CardVariant }: {
         <Card className={classNames(getCardClass(CardVariant), "col-span-1 lg:col-span-2 xl:col-span-1")}>
             <div className="flex  gap-4">
                 <Avatar
-                    size={45}
+                    size={55}
                     className={getAvatarClass(CardVariant)}
                     icon={Icon}
                 />
@@ -92,7 +88,7 @@ const Counter_2 = ({ Icon, Value, label, CardVariant }: {
                     <div className="flex gap-2 items-end  justify-end">
                         <h3 className={classNames("font-bold",getLabelColorClass(CardVariant))}>{Value}</h3>
                     </div>
-                    <p className={classNames(getLabelColorClass(CardVariant), "text-right  text-sm")}>{label}</p>
+                    <p className={classNames(getLabelColorClass(CardVariant), "text-right font-bold text-lg")}>{label}</p>
                 </div>
             </div>
         </Card>
